@@ -3,357 +3,1229 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111418">
+  <meta name="theme-color" content="#0b0e13">
+  <meta name="description" content="Apex Legends ランクマップのローテーションを日本時間で表示">
   <title>Apex Legends ランクマップ</title>
+
   <style>
     :root {
       color-scheme: dark;
-      --bg: #111418;
-      --panel: #1a2027;
-      --panel-2: #202834;
+
+      --bg: #0b0e13;
+      --bg-2: #11161d;
+      --panel: #161c24;
+      --panel-hover: #1b222c;
+      --panel-strong: #202936;
+
       --text: #f5f7fb;
-      --muted: #a8b2c1;
-      --line: #303b49;
-      --accent: #7ee0ff;
+      --muted: #9ca8b8;
+      --muted-2: #6f7b8b;
+
+      --line: #293340;
+      --line-strong: #3a4655;
+
+      --accent: #79ddff;
+      --accent-soft: rgba(121, 221, 255, 0.12);
+      --accent-strong: rgba(121, 221, 255, 0.2);
+
+      --warning: #ffb45e;
+
+      --radius: 14px;
+      --radius-small: 10px;
+
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
-      background: var(--bg);
+
+      background:
+        radial-gradient(
+          circle at 50% -10%,
+          rgba(121, 221, 255, 0.08),
+          transparent 38%
+        ),
+        var(--bg);
+
       color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      line-height: 1.5;
+    }
+
+    button {
+      font: inherit;
     }
 
     .app {
-      width: min(980px, 100%);
+      width: min(960px, 100%);
       margin: 0 auto;
-      padding: 18px 14px 34px;
+      padding: 20px 14px 40px;
     }
 
-    .topbar,
-    .sectionHeader,
-    .statusLine,
-    .nextPanel,
-    .scheduleItem {
+    /* =========================
+       Header
+    ========================= */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+
+      font-size: clamp(22px, 5vw, 28px);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .refreshButton {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+
+      min-width: 82px;
+      min-height: 42px;
+
+      padding: 0 14px;
+
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+
+      background: var(--panel);
+      color: var(--text);
+
+      font-size: 13px;
+      font-weight: 800;
+
+      cursor: pointer;
+
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .refreshButton:hover {
+      background: var(--panel-hover);
+      border-color: #526173;
+    }
+
+    .refreshButton:active {
+      transform: scale(0.97);
+    }
+
+    .refreshIcon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* =========================
+       Current map
+    ========================= */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+
+      display: grid;
+      gap: 30px;
+
+      padding: 24px;
+
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(121, 221, 255, 0.13),
+          transparent 42%
+        ),
+        linear-gradient(
+          315deg,
+          rgba(255, 180, 94, 0.1),
+          transparent 45%
+        ),
+        var(--panel);
+
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+
+      position: absolute;
+      width: 180px;
+      height: 180px;
+
+      right: -80px;
+      top: -80px;
+
+      border-radius: 50%;
+
+      background: rgba(121, 221, 255, 0.06);
+
+      pointer-events: none;
+    }
+
+    .currentLabel {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin: 0 0 7px;
+
+      color: var(--accent);
+
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    .liveDot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: var(--accent);
+
+      box-shadow: 0 0 12px rgba(121, 221, 255, 0.8);
+    }
+
+    .currentMap {
+      margin: 0;
+
+      font-size: clamp(42px, 12vw, 76px);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+
+      overflow-wrap: anywhere;
+    }
+
+    .currentTime {
+      margin: 13px 0 0;
+
+      color: var(--muted);
+
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================
+       Countdown
+    ========================= */
+
+    .countdownBox {
+      position: relative;
+      z-index: 1;
+
+      padding-top: 20px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .countdownLabel {
+      display: block;
+
+      margin-bottom: 5px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .countdown {
+      display: block;
+
+      font-size: clamp(38px, 11vw, 62px);
+      line-height: 1;
+
+      font-weight: 800;
+      letter-spacing: -0.04em;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdownSub {
+      display: block;
+
+      margin-top: 7px;
+
+      color: var(--muted-2);
+
+      font-size: 11px;
+    }
+
+    /* =========================
+       Next map
+    ========================= */
+
+    .nextPanel {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+
+      margin-top: 12px;
+      padding: 18px;
+
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+
+      background: var(--panel);
+    }
+
+    .nextLabel {
+      margin: 0 0 3px;
+
+      color: var(--muted-2);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nextMap {
+      margin: 0;
+
+      font-size: clamp(22px, 6vw, 30px);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .nextTime {
+      margin: 0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================
+       Status
+    ========================= */
+
+    .statusLine {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-    }
-
-    .topbar {
-      margin-bottom: 16px;
-    }
-
-    .eyebrow,
-    .label,
-    .sectionHeader p,
-    .statusLine,
-    .time {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      overflow-wrap: anywhere;
-    }
-
-    h1 {
-      margin: 2px 0 0;
-      font-size: 25px;
-      line-height: 1.1;
-    }
-
-    button {
-      min-width: 68px;
-      min-height: 42px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel-2);
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .hero {
-      min-height: 210px;
-      display: grid;
-      grid-template-columns: 1fr;
-      align-content: space-between;
-      gap: 28px;
-      padding: 22px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background:
-        linear-gradient(135deg, rgba(126, 224, 255, .22), transparent 45%),
-        linear-gradient(315deg, rgba(255, 180, 94, .18), transparent 55%),
-        var(--panel);
-    }
-
-    .hero h2 {
-      margin: 4px 0 8px;
-      font-size: clamp(38px, 11vw, 72px);
-      line-height: .95;
-    }
-
-    .heroText p:last-child {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .countdown {
-      display: grid;
-      gap: 4px;
-      justify-items: start;
-    }
-
-    .countdown span {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .countdown strong {
-      font-size: clamp(32px, 10vw, 58px);
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .nextPanel {
-      margin-top: 12px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-    }
-
-    .nextPanel h3 {
-      margin: 4px 0 0;
-      font-size: 24px;
-    }
-
-    .nextPanel > p {
-      margin: 0;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    .statusLine {
       flex-wrap: wrap;
-      margin: 14px 0 20px;
-      padding: 0 2px;
+
+      margin: 14px 2px 26px;
+
+      color: var(--muted-2);
+
+      font-size: 11px;
     }
+
+    .statusFixed {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      padding: 5px 9px;
+
+      border: 1px solid var(--line);
+      border-radius: 999px;
+
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* =========================
+       Schedule header
+    ========================= */
 
     .sectionHeader {
-      margin-bottom: 10px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+
+      margin-bottom: 11px;
     }
 
     .sectionHeader h3 {
       margin: 0;
+
       font-size: 18px;
+      line-height: 1.2;
     }
+
+    .sectionHeader p {
+      margin: 0;
+
+      color: var(--muted-2);
+
+      font-size: 11px;
+    }
+
+    /* =========================
+       Schedule
+    ========================= */
 
     .schedule {
       display: grid;
-      gap: 8px;
+      gap: 7px;
     }
 
     .scheduleItem {
-      min-height: 66px;
-      padding: 12px 14px;
+      position: relative;
+
+      display: grid;
+      grid-template-columns: 8px 1fr auto;
+      align-items: center;
+      gap: 12px;
+
+      min-height: 70px;
+      padding: 11px 13px;
+
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-small);
+
       background: var(--panel);
+
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .scheduleItem:hover {
+      background: var(--panel-hover);
+    }
+
+    .scheduleIndicator {
+      width: 6px;
+      height: 42px;
+
+      border-radius: 99px;
+
+      background: var(--line-strong);
     }
 
     .scheduleItem.now {
-      border-color: var(--accent);
-      background: linear-gradient(90deg, rgba(126, 224, 255, .14), rgba(26, 32, 39, 1));
+      border-color: rgba(121, 221, 255, 0.55);
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(121, 221, 255, 0.13),
+          rgba(22, 28, 36, 1) 55%
+        );
+
+      box-shadow:
+        inset 3px 0 0 var(--accent),
+        0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .scheduleItem.now .scheduleIndicator {
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(121, 221, 255, 0.45);
     }
 
     .mapName {
       margin: 0;
-      font-size: 17px;
+
+      font-size: 15px;
       font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .time {
+      margin: 4px 0 0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.3;
+
+      font-variant-numeric: tabular-nums;
     }
 
     .badge {
-      min-width: 48px;
-      padding: 5px 8px;
+      min-width: 58px;
+
+      padding: 6px 8px;
+
+      border: 1px solid var(--line);
       border-radius: 999px;
-      background: var(--panel-2);
+
+      background: var(--panel-strong);
+
       color: var(--muted);
-      font-size: 12px;
+
+      font-size: 10px;
+      font-weight: 700;
+
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .scheduleItem.now .badge {
+      border-color: transparent;
+
+      background: var(--accent);
+      color: #061015;
+
+      font-weight: 900;
+    }
+
+    /* =========================
+       Footer
+    ========================= */
+
+    .footerNote {
+      margin: 20px 0 0;
+
+      color: var(--muted-2);
+
+      font-size: 10px;
+      line-height: 1.6;
       text-align: center;
     }
 
-    .now .badge {
-      color: #081117;
-      background: var(--accent);
-      font-weight: 800;
-    }
+    /* =========================
+       Tablet / Desktop
+    ========================= */
 
-    @media (min-width: 720px) {
+    @media (min-width: 640px) {
       .app {
-        padding-top: 32px;
+        padding-top: 30px;
       }
 
       .hero {
         grid-template-columns: 1fr auto;
         align-items: end;
+
         min-height: 270px;
         padding: 30px;
       }
 
-      .countdown {
-        justify-items: end;
+      .countdownBox {
+        min-width: 235px;
+
+        padding-top: 0;
+        padding-left: 28px;
+
+        border-top: 0;
+        border-left: 1px solid var(--line);
+      }
+
+      .nextPanel {
+        padding: 20px 22px;
+      }
+
+      .scheduleItem {
+        grid-template-columns: 8px 1fr auto;
+
+        min-height: 68px;
+        padding: 12px 16px;
+      }
+
+      .mapName {
+        font-size: 16px;
+      }
+
+      .time {
+        font-size: 12px;
+      }
+    }
+
+    @media (min-width: 860px) {
+      .app {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .hero {
+        padding: 34px;
+      }
+
+      .currentMap {
+        max-width: 650px;
+      }
+    }
+
+    /* =========================
+       Small mobile
+    ========================= */
+
+    @media (max-width: 380px) {
+      .app {
+        padding: 16px 10px 30px;
+      }
+
+      .hero {
+        padding: 20px;
+      }
+
+      .nextPanel {
+        grid-template-columns: 1fr;
+      }
+
+      .nextTime {
+        text-align: left;
+      }
+
+      .scheduleItem {
+        grid-template-columns: 6px 1fr;
+      }
+
+      .badge {
+        display: none;
       }
     }
   </style>
 </head>
+
 <body>
+
   <main class="app">
-    <section class="topbar">
+
+    <!-- =====================
+         Header
+    ====================== -->
+
+    <header class="topbar">
       <div>
         <p class="eyebrow">Battle Royale Ranked</p>
         <h1>Apex ランクマップ</h1>
       </div>
-      <button id="refreshButton" type="button">更新</button>
-    </section>
 
-    <section class="hero">
+      <button
+        id="refreshButton"
+        class="refreshButton"
+        type="button"
+        aria-label="マップ情報を更新"
+      >
+        <span class="refreshIcon">↻</span>
+        更新
+      </button>
+    </header>
+
+
+    <!-- =====================
+         Current Map
+    ====================== -->
+
+    <section class="hero" aria-label="現在のランクマップ">
+
       <div class="heroText">
-        <p class="label">現在</p>
-        <h2 id="currentMap">読み込み中</h2>
-        <p id="currentTime">--</p>
+        <p class="currentLabel">
+          <span class="liveDot" aria-hidden="true"></span>
+          現在のマップ
+        </p>
+
+        <h2 id="currentMap" class="currentMap">
+          読み込み中
+        </h2>
+
+        <p id="currentTime" class="currentTime">
+          --
+        </p>
       </div>
-      <div class="countdown">
-        <span>切り替えまで</span>
-        <strong id="countdown">--:--:--</strong>
+
+
+      <div class="countdownBox">
+        <span class="countdownLabel">
+          次のマップまで
+        </span>
+
+        <strong
+          id="countdown"
+          class="countdown"
+          aria-live="polite"
+        >
+          --:--:--
+        </strong>
+
+        <span class="countdownSub">
+          日本時間
+        </span>
       </div>
+
     </section>
 
-    <section class="nextPanel">
+
+    <!-- =====================
+         Next Map
+    ====================== -->
+
+    <section class="nextPanel" aria-label="次のランクマップ">
+
       <div>
-        <p class="label">次のマップ</p>
-        <h3 id="nextMap">--</h3>
+        <p class="nextLabel">
+          Next Map
+        </p>
+
+        <h3 id="nextMap" class="nextMap">
+          --
+        </h3>
       </div>
-      <p id="nextTime">--</p>
+
+      <p id="nextTime" class="nextTime">
+        --
+      </p>
+
     </section>
 
-    <section class="statusLine">
-      <span id="lastUpdated">更新: --</span>
-      <span>固定計算版</span>
-    </section>
 
-    <section>
+    <!-- =====================
+         Status
+    ====================== -->
+
+    <div class="statusLine">
+      <span id="lastUpdated">
+        更新: --
+      </span>
+
+      <span class="statusFixed">
+        ● 固定ローテーション
+      </span>
+    </div>
+
+
+    <!-- =====================
+         Schedule
+    ====================== -->
+
+    <section aria-label="今後7日間のマップスケジュール">
+
       <div class="sectionHeader">
         <h3>今後7日間</h3>
-        <p>日本時間で表示</p>
+
+        <p>
+          日本時間
+        </p>
       </div>
-      <div id="schedule" class="schedule"></div>
+
+      <div
+        id="schedule"
+        class="schedule"
+      ></div>
+
     </section>
+
+
+    <p class="footerNote">
+      ※ 表示時刻は端末の現在時刻を基準に自動更新されます。
+    </p>
+
   </main>
 
-  <script>
-    const TZ = "Asia/Tokyo";
-    const DURATION_MINUTES = 270;
-    const MAPS = [
-      { name: "Storm Point" },
-      { name: "E-District" },
-      { name: "World's Edge" }
-    ];
-    const ANCHOR = new Date("2026-08-13T03:30:00.000Z");
 
-    const $ = (id) => document.getElementById(id);
-    const dateFmt = new Intl.DateTimeFormat("ja-JP", {
-      timeZone: TZ,
-      month: "numeric",
-      day: "numeric",
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-    const shortDateFmt = new Intl.DateTimeFormat("ja-JP", {
-      timeZone: TZ,
-      month: "numeric",
-      day: "numeric",
-      weekday: "short"
-    });
+  <script>
+    /*
+     * ==========================================
+     * Apex Legends ランクマップ設定
+     * ==========================================
+     */
+
+    const TZ = "Asia/Tokyo";
+
+    // 1マップあたりの表示時間
+    const DURATION_MINUTES = 270;
+
+    // マップローテーション
+    const MAPS = [
+      {
+        name: "Storm Point"
+      },
+      {
+        name: "E-District"
+      },
+      {
+        name: "World's Edge"
+      }
+    ];
+
+    /*
+     * ローテーションの基準時刻
+     *
+     * 2026-08-13 12:30 JST
+     * = 2026-08-13 03:30 UTC
+     */
+    const ANCHOR = new Date(
+      "2026-08-13T03:30:00.000Z"
+    );
+
+
+    /*
+     * ==========================================
+     * DOM
+     * ==========================================
+     */
+
+    const $ = (id) =>
+      document.getElementById(id);
+
+
+    /*
+     * ==========================================
+     * 日付フォーマット
+     * ==========================================
+     */
+
+    const dateFmt =
+      new Intl.DateTimeFormat("ja-JP", {
+        timeZone: TZ,
+
+        month: "numeric",
+        day: "numeric",
+        weekday: "short",
+
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+
+    const shortDateFmt =
+      new Intl.DateTimeFormat("ja-JP", {
+        timeZone: TZ,
+
+        month: "numeric",
+        day: "numeric",
+        weekday: "short"
+      });
+
+
+    /*
+     * ==========================================
+     * 時刻表示
+     * ==========================================
+     */
 
     function formatRange(item) {
-      return `${dateFmt.format(item.start)} - ${dateFmt.format(item.end)}`;
+      return (
+        `${dateFmt.format(item.start)}`
+        + " ～ "
+        + `${dateFmt.format(item.end)}`
+      );
     }
+
+
+    /*
+     * ==========================================
+     * カウントダウン
+     * ==========================================
+     */
 
     function formatClock(ms) {
-      const total = Math.max(0, Math.floor(ms / 1000));
-      const hours = Math.floor(total / 3600);
-      const minutes = Math.floor((total % 3600) / 60);
-      const seconds = total % 60;
-      return [hours, minutes, seconds].map((n) => String(n).padStart(2, "0")).join(":");
+
+      const total =
+        Math.max(
+          0,
+          Math.floor(ms / 1000)
+        );
+
+      const hours =
+        Math.floor(total / 3600);
+
+      const minutes =
+        Math.floor(
+          (total % 3600) / 60
+        );
+
+      const seconds =
+        total % 60;
+
+      return [
+        hours,
+        minutes,
+        seconds
+      ]
+        .map(
+          (n) =>
+            String(n).padStart(2, "0")
+        )
+        .join(":");
     }
 
-    function buildSchedule(now = new Date()) {
-      const blockMs = DURATION_MINUTES * 60 * 1000;
-      const elapsedBlocks = Math.floor((now.getTime() - ANCHOR.getTime()) / blockMs);
-      const currentStart = new Date(ANCHOR.getTime() + elapsedBlocks * blockMs);
-      const currentIndex = ((elapsedBlocks % MAPS.length) + MAPS.length) % MAPS.length;
+
+    /*
+     * ==========================================
+     * スケジュール生成
+     * ==========================================
+     */
+
+    function buildSchedule(
+      now = new Date()
+    ) {
+
+      const blockMs =
+        DURATION_MINUTES *
+        60 *
+        1000;
+
+
+      const elapsedBlocks =
+        Math.floor(
+          (
+            now.getTime() -
+            ANCHOR.getTime()
+          ) / blockMs
+        );
+
+
+      const currentStart =
+        new Date(
+          ANCHOR.getTime() +
+          elapsedBlocks * blockMs
+        );
+
+
+      const currentIndex =
+        (
+          elapsedBlocks %
+          MAPS.length +
+          MAPS.length
+        ) % MAPS.length;
+
+
       const items = [];
 
-      for (let i = 0; i < 40; i += 1) {
-        const mapIndex = (currentIndex + i) % MAPS.length;
-        const start = new Date(currentStart.getTime() + i * blockMs);
-        const end = new Date(start.getTime() + blockMs);
+
+      /*
+       * 7日間以上を生成してから
+       * 必要な範囲だけ表示
+       */
+      for (
+        let i = 0;
+        i < 80;
+        i += 1
+      ) {
+
+        const mapIndex =
+          (
+            currentIndex +
+            i
+          ) % MAPS.length;
+
+
+        const start =
+          new Date(
+            currentStart.getTime() +
+            i * blockMs
+          );
+
+
+        const end =
+          new Date(
+            start.getTime() +
+            blockMs
+          );
+
+
         items.push({
-          name: MAPS[mapIndex].name,
+          name:
+            MAPS[mapIndex].name,
+
           start,
           end,
-          isCurrent: i === 0
+
+          isCurrent:
+            i === 0
         });
       }
 
-      return items.filter((item) => item.start.getTime() < now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+      const sevenDaysLater =
+        now.getTime() +
+        7 *
+        24 *
+        60 *
+        60 *
+        1000;
+
+
+      return items.filter(
+        (item) =>
+          item.start.getTime() <
+          sevenDaysLater
+      );
     }
+
+
+    /*
+     * ==========================================
+     * スケジュール表示
+     * ==========================================
+     */
+
+    function renderSchedule(items) {
+
+      const root =
+        $("schedule");
+
+
+      root.innerHTML = "";
+
+
+      items.forEach(
+        (item) => {
+
+          const row =
+            document.createElement(
+              "article"
+            );
+
+
+          row.className =
+            `scheduleItem${
+              item.isCurrent
+                ? " now"
+                : ""
+            }`;
+
+
+          const indicator =
+            document.createElement(
+              "span"
+            );
+
+          indicator.className =
+            "scheduleIndicator";
+
+          indicator.setAttribute(
+            "aria-hidden",
+            "true"
+          );
+
+
+          const content =
+            document.createElement(
+              "div"
+            );
+
+
+          const mapName =
+            document.createElement(
+              "p"
+            );
+
+          mapName.className =
+            "mapName";
+
+          mapName.textContent =
+            item.name;
+
+
+          const time =
+            document.createElement(
+              "p"
+            );
+
+          time.className =
+            "time";
+
+          time.textContent =
+            formatRange(item);
+
+
+          content.appendChild(
+            mapName
+          );
+
+          content.appendChild(
+            time
+          );
+
+
+          const badge =
+            document.createElement(
+              "span"
+            );
+
+          badge.className =
+            "badge";
+
+          badge.textContent =
+            item.isCurrent
+              ? "現在"
+              : shortDateFmt.format(
+                  item.start
+                );
+
+
+          row.appendChild(
+            indicator
+          );
+
+          row.appendChild(
+            content
+          );
+
+          row.appendChild(
+            badge
+          );
+
+
+          root.appendChild(
+            row
+          );
+        }
+      );
+    }
+
+
+    /*
+     * ==========================================
+     * 全体描画
+     * ==========================================
+     */
 
     function render() {
-      const now = new Date();
-      const items = buildSchedule(now);
-      const current = items[0];
-      const next = items[1];
 
-      $("currentMap").textContent = current.name;
-      $("currentTime").textContent = formatRange(current);
-      $("nextMap").textContent = next.name;
-      $("nextTime").textContent = formatRange(next);
-      $("countdown").textContent = formatClock(current.end - now);
-      $("lastUpdated").textContent = `更新: ${dateFmt.format(now)}`;
+      const now =
+        new Date();
 
-      const root = $("schedule");
-      root.innerHTML = "";
-      items.forEach((item) => {
-        const row = document.createElement("article");
-        row.className = `scheduleItem${item.isCurrent ? " now" : ""}`;
-        row.innerHTML = `
-          <div>
-            <p class="mapName">${item.name}</p>
-            <p class="time">${formatRange(item)}</p>
-          </div>
-          <span class="badge">${item.isCurrent ? "現在" : shortDateFmt.format(item.start)}</span>
-        `;
-        root.appendChild(row);
-      });
+
+      const items =
+        buildSchedule(now);
+
+
+      const current =
+        items[0];
+
+
+      const next =
+        items[1];
+
+
+      if (!current || !next) {
+        return;
+      }
+
+
+      /*
+       * 現在のマップ
+       */
+      $("currentMap")
+        .textContent =
+        current.name;
+
+
+      /*
+       * 現在の時間帯
+       */
+      $("currentTime")
+        .textContent =
+        formatRange(current);
+
+
+      /*
+       * 次のマップ
+       */
+      $("nextMap")
+        .textContent =
+        next.name;
+
+
+      /*
+       * 次のマップ開始時間
+       */
+      $("nextTime")
+        .textContent =
+        formatRange(next);
+
+
+      /*
+       * カウントダウン
+       */
+      $("countdown")
+        .textContent =
+        formatClock(
+          current.end.getTime() -
+          now.getTime()
+        );
+
+
+      /*
+       * 最終更新
+       */
+      $("lastUpdated")
+        .textContent =
+        `更新: ${dateFmt.format(now)}`;
+
+
+      /*
+       * スケジュール
+       */
+      renderSchedule(items);
     }
 
-    $("refreshButton").addEventListener("click", render);
+
+    /*
+     * ==========================================
+     * 更新ボタン
+     * ==========================================
+     */
+
+    $("refreshButton")
+      .addEventListener(
+        "click",
+        render
+      );
+
+
+    /*
+     * ==========================================
+     * 初期表示
+     * ==========================================
+     */
+
     render();
-    setInterval(render, 1000);
+
+
+    /*
+     * ==========================================
+     * 1秒ごとに更新
+     * ==========================================
+     */
+
+    setInterval(
+      render,
+      1000
+    );
   </script>
+
 </body>
 </html>
