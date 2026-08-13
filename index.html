@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111418">
+  <title>Apex Legends ランクマップ</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111418;
+      --panel: #1a2027;
+      --panel-2: #202834;
+      --text: #f5f7fb;
+      --muted: #a8b2c1;
+      --line: #303b49;
+      --accent: #7ee0ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 18px 14px 34px;
+    }
+
+    .topbar,
+    .sectionHeader,
+    .statusLine,
+    .nextPanel,
+    .scheduleItem {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .topbar {
+      margin-bottom: 16px;
+    }
+
+    .eyebrow,
+    .label,
+    .sectionHeader p,
+    .statusLine,
+    .time {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      overflow-wrap: anywhere;
+    }
+
+    h1 {
+      margin: 2px 0 0;
+      font-size: 25px;
+      line-height: 1.1;
+    }
+
+    button {
+      min-width: 68px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .hero {
+      min-height: 210px;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-content: space-between;
+      gap: 28px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(126, 224, 255, .22), transparent 45%),
+        linear-gradient(315deg, rgba(255, 180, 94, .18), transparent 55%),
+        var(--panel);
+    }
+
+    .hero h2 {
+      margin: 4px 0 8px;
+      font-size: clamp(38px, 11vw, 72px);
+      line-height: .95;
+    }
+
+    .heroText p:last-child {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .countdown {
+      display: grid;
+      gap: 4px;
+      justify-items: start;
+    }
+
+    .countdown span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .countdown strong {
+      font-size: clamp(32px, 10vw, 58px);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nextPanel {
+      margin-top: 12px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .nextPanel h3 {
+      margin: 4px 0 0;
+      font-size: 24px;
+    }
+
+    .nextPanel > p {
+      margin: 0;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .statusLine {
+      flex-wrap: wrap;
+      margin: 14px 0 20px;
+      padding: 0 2px;
+    }
+
+    .sectionHeader {
+      margin-bottom: 10px;
+    }
+
+    .sectionHeader h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .schedule {
+      display: grid;
+      gap: 8px;
+    }
+
+    .scheduleItem {
+      min-height: 66px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .scheduleItem.now {
+      border-color: var(--accent);
+      background: linear-gradient(90deg, rgba(126, 224, 255, .14), rgba(26, 32, 39, 1));
+    }
+
+    .mapName {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .badge {
+      min-width: 48px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .now .badge {
+      color: #081117;
+      background: var(--accent);
+      font-weight: 800;
+    }
+
+    @media (min-width: 720px) {
+      .app {
+        padding-top: 32px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        min-height: 270px;
+        padding: 30px;
+      }
+
+      .countdown {
+        justify-items: end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="topbar">
+      <div>
+        <p class="eyebrow">Battle Royale Ranked</p>
+        <h1>Apex ランクマップ</h1>
+      </div>
+      <button id="refreshButton" type="button">更新</button>
+    </section>
+
+    <section class="hero">
+      <div class="heroText">
+        <p class="label">現在</p>
+        <h2 id="currentMap">読み込み中</h2>
+        <p id="currentTime">--</p>
+      </div>
+      <div class="countdown">
+        <span>切り替えまで</span>
+        <strong id="countdown">--:--:--</strong>
+      </div>
+    </section>
+
+    <section class="nextPanel">
+      <div>
+        <p class="label">次のマップ</p>
+        <h3 id="nextMap">--</h3>
+      </div>
+      <p id="nextTime">--</p>
+    </section>
+
+    <section class="statusLine">
+      <span id="lastUpdated">更新: --</span>
+      <span>固定計算版</span>
+    </section>
+
+    <section>
+      <div class="sectionHeader">
+        <h3>今後7日間</h3>
+        <p>日本時間で表示</p>
+      </div>
+      <div id="schedule" class="schedule"></div>
+    </section>
+  </main>
+
+  <script>
+    const TZ = "Asia/Tokyo";
+    const DURATION_MINUTES = 270;
+    const MAPS = [
+      { name: "Storm Point" },
+      { name: "E-District" },
+      { name: "World's Edge" }
+    ];
+    const ANCHOR = new Date("2026-08-13T03:30:00.000Z");
+
+    const $ = (id) => document.getElementById(id);
+    const dateFmt = new Intl.DateTimeFormat("ja-JP", {
+      timeZone: TZ,
+      month: "numeric",
+      day: "numeric",
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+    const shortDateFmt = new Intl.DateTimeFormat("ja-JP", {
+      timeZone: TZ,
+      month: "numeric",
+      day: "numeric",
+      weekday: "short"
+    });
+
+    function formatRange(item) {
+      return `${dateFmt.format(item.start)} - ${dateFmt.format(item.end)}`;
+    }
+
+    function formatClock(ms) {
+      const total = Math.max(0, Math.floor(ms / 1000));
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+      const seconds = total % 60;
+      return [hours, minutes, seconds].map((n) => String(n).padStart(2, "0")).join(":");
+    }
+
+    function buildSchedule(now = new Date()) {
+      const blockMs = DURATION_MINUTES * 60 * 1000;
+      const elapsedBlocks = Math.floor((now.getTime() - ANCHOR.getTime()) / blockMs);
+      const currentStart = new Date(ANCHOR.getTime() + elapsedBlocks * blockMs);
+      const currentIndex = ((elapsedBlocks % MAPS.length) + MAPS.length) % MAPS.length;
+      const items = [];
+
+      for (let i = 0; i < 40; i += 1) {
+        const mapIndex = (currentIndex + i) % MAPS.length;
+        const start = new Date(currentStart.getTime() + i * blockMs);
+        const end = new Date(start.getTime() + blockMs);
+        items.push({
+          name: MAPS[mapIndex].name,
+          start,
+          end,
+          isCurrent: i === 0
+        });
+      }
+
+      return items.filter((item) => item.start.getTime() < now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    }
+
+    function render() {
+      const now = new Date();
+      const items = buildSchedule(now);
+      const current = items[0];
+      const next = items[1];
+
+      $("currentMap").textContent = current.name;
+      $("currentTime").textContent = formatRange(current);
+      $("nextMap").textContent = next.name;
+      $("nextTime").textContent = formatRange(next);
+      $("countdown").textContent = formatClock(current.end - now);
+      $("lastUpdated").textContent = `更新: ${dateFmt.format(now)}`;
+
+      const root = $("schedule");
+      root.innerHTML = "";
+      items.forEach((item) => {
+        const row = document.createElement("article");
+        row.className = `scheduleItem${item.isCurrent ? " now" : ""}`;
+        row.innerHTML = `
+          <div>
+            <p class="mapName">${item.name}</p>
+            <p class="time">${formatRange(item)}</p>
+          </div>
+          <span class="badge">${item.isCurrent ? "現在" : shortDateFmt.format(item.start)}</span>
+        `;
+        root.appendChild(row);
+      });
+    }
+
+    $("refreshButton").addEventListener("click", render);
+    render();
+    setInterval(render, 1000);
+  </script>
+</body>
+</html>
