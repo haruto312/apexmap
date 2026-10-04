@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111316">
+<meta name="description" content="Apex Legends ミックステープのモードとマップの予定を日本時間で表示">
+<title>Apex ミックステープ — Rotation Board</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+:root{color-scheme:dark;--red:#ed3c43;--cream:#ece9e1;--muted:#989ca3;--border:#34383d;--display:'Barlow Condensed','Arial Narrow',sans-serif;--body:'Noto Sans JP',system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#111316;color:var(--cream);font-family:var(--body);font-size:13px}body:before{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,#ffffff02 3px 4px);z-index:5}button{font:inherit}button:focus-visible,a:focus-visible{outline:3px solid var(--cream);outline-offset:5px}button{cursor:pointer}svg{display:block} .shell{max-width:1440px;margin:auto;padding:0 48px}
+.header{border-bottom:1px solid var(--border);background:#15171b}.headerInner{height:86px;display:flex;align-items:center;gap:18px}.emblem{width:39px;height:44px;color:var(--red)}.brand{font-family:var(--display);font-size:30px;letter-spacing:.06em;font-weight:800;line-height:.85}.brand small{display:block;font-size:10px;letter-spacing:.36em;margin-top:8px;color:var(--muted)}.headerRule{height:28px;width:1px;background:var(--border);margin:0 17px}.pageLabel{font-size:11px;letter-spacing:.16em;font-weight:700}.headerRight{margin-left:auto;display:flex;align-items:center;gap:25px}.timezone{font-family:var(--display);font-size:15px;letter-spacing:.12em;color:var(--muted)}.update{background:transparent;border:1px solid #54585e;color:var(--cream);padding:10px 16px;display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700}.update:hover{background:var(--red);border-color:var(--red)}.update svg{width:13px;height:13px}
+.sectionNav{display:flex;align-items:center;justify-content:space-between;margin-top:29px;margin-bottom:22px;border-bottom:1px solid var(--border)}.activeTab{position:relative;padding:13px 24px 15px;background:var(--red);font-size:12px;font-weight:900;letter-spacing:.13em;clip-path:polygon(0 0,calc(100% - 13px) 0,100% 13px,100% 100%,0 100%)}.navMeta{display:flex;gap:16px;align-items:center;color:var(--muted);font-family:var(--display);font-size:13px;letter-spacing:.13em}.tinySquare{width:5px;height:5px;background:var(--red)}
+.intro{display:flex;justify-content:space-between;align-items:end;margin:29px 0 22px}.kicker{font-family:var(--display);font-weight:600;letter-spacing:.23em;color:var(--red);font-size:12px;margin:0 0 7px}h1{font-size:clamp(25px,3vw,36px);font-weight:900;letter-spacing:.025em;margin:0}.intro p:last-child{color:var(--muted);font-size:11px;line-height:1.7;margin:0;text-align:right}
+.hero{position:relative;min-height:450px;border:1px solid #4c4c4a;background:#252a2f;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:26px 30px 32px;isolation:isolate}.hero:before{content:'';position:absolute;inset:0;z-index:-2;background-image:var(--hero-image);background-size:cover;background-position:center 42%;transition:opacity .2s}.hero:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#080c12c9,transparent 80%),linear-gradient(0deg,#080c12f5,transparent 90%)}.heroCorners{position:absolute;inset:9px;pointer-events:none;background:linear-gradient(var(--cream),var(--cream)) left top/19px 2px no-repeat,linear-gradient(var(--cream),var(--cream)) left top/2px 19px no-repeat,linear-gradient(var(--cream),var(--cream)) right bottom/19px 2px no-repeat,linear-gradient(var(--cream),var(--cream)) right bottom/2px 19px no-repeat;opacity:.55}.heroTop{display:flex;justify-content:space-between;align-items:center}.live{display:flex;gap:8px;align-items:center;font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.13em;background:#101216b8;padding:8px 12px;border-left:3px solid var(--red)}.live i{width:6px;height:6px;background:var(--red);box-shadow:0 0 10px #ed3c4355}.heroIndex{font-family:var(--display);color:#ffffff8c;font-size:13px;letter-spacing:.15em}.heroBottom{display:grid;grid-template-columns:minmax(0,1fr) 285px;align-items:end;gap:30px}.heroTag{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.12em;margin:0 0 12px;font-weight:700}.heroTag:before{content:'';width:21px;height:3px;background:var(--red)}.currentMap{font-family:var(--display);text-transform:uppercase;font-weight:800;font-size:clamp(52px,6.7vw,96px);letter-spacing:-.025em;line-height:.88;margin:0;text-shadow:0 2px 24px #0005}.mapJapanese{margin:14px 0 20px;color:#d8d8d6;font-size:12px;font-weight:500;letter-spacing:.13em}.currentTime{margin:0;color:#c3c4c7;font-size:11px;line-height:1.8}.timer{background:#11151ae6;border-top:3px solid var(--red);padding:21px 23px 18px;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}.timerLabel{font-size:10px;font-weight:700;letter-spacing:.08em;color:#b6b9bf}.countdown{display:block;font-family:var(--display);font-weight:700;font-size:59px;letter-spacing:.025em;line-height:1.1;margin:8px 0 12px;font-variant-numeric:tabular-nums}.progressTrack{height:3px;background:#ffffff19;overflow:hidden}.progressFill{height:100%;background:var(--red);width:0;transition:width 1s linear}.timerFoot{display:flex;justify-content:space-between;margin-top:9px;font-family:var(--display);color:var(--muted);font-size:10px;letter-spacing:.13em}
+.nextPanel{display:grid;grid-template-columns:100px 1fr auto;min-height:94px;align-items:center;border:1px solid var(--border);border-top:0;background:#1b1e23}.nextThumb{height:100%;min-height:94px;background-image:linear-gradient(90deg,transparent,#1b1e234d),var(--next-image);background-size:cover;background-position:center;border-right:1px solid var(--border)}.nextDetails{padding:13px 23px;display:flex;align-items:center;gap:27px}.nextEyebrow{font-family:var(--display);font-size:11px;font-weight:700;color:var(--red);letter-spacing:.16em}.nextName{font-family:var(--display);font-size:30px;text-transform:uppercase;line-height:1;font-weight:700;margin:5px 0 0}.nextJapanese{font-size:10px;color:var(--muted);margin:6px 0 0}.nextArrow{width:19px;height:19px;color:#747a83}.nextTime{font-size:11px;color:#b5b8bd;padding:15px 28px;text-align:right;line-height:1.9;margin:0}.statusLine{display:flex;justify-content:space-between;color:#787f89;margin:12px 0 37px;font-size:10px;gap:12px}.statusNote{color:#b9aa88}
+.scheduleHead{display:flex;align-items:end;justify-content:space-between;margin-bottom:17px;gap:16px}.scheduleTitle{display:flex;align-items:center;gap:12px}.sectionNumber{font-family:var(--display);color:var(--red);font-size:13px;font-weight:600;letter-spacing:.1em;border-right:1px solid var(--border);padding-right:12px}.scheduleHead h2{font-size:19px;margin:0;font-weight:900}.scheduleHead p{color:var(--muted);font-size:10px;margin:0}.rotationLegend{display:flex;gap:17px;align-items:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 0;margin-bottom:23px}.rotationLegend>span{font-family:var(--display);color:#757d88;font-size:11px;letter-spacing:.16em}.rotationStep{font-family:var(--display);text-transform:uppercase;color:#aeb3ba;font-size:14px;letter-spacing:.03em}.rotationChevron{color:var(--red)}
+.schedule{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.dayGroup{background:#181b20;border:1px solid #2c3138}.dayHeading{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:#20242a;border-bottom:1px solid var(--border)}.dayHeading h3{font-size:11px;font-weight:700;margin:0;letter-spacing:.03em}.dayHeading span{font-family:var(--display);font-size:10px;letter-spacing:.11em;color:var(--muted)}.scheduleItem{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;border-bottom:1px solid #ffffff08;min-height:69px}.scheduleItem:last-child{border-bottom:0}.scheduleItem.now{background:linear-gradient(90deg,#ed3c431c,transparent);box-shadow:inset 3px 0 var(--red)}.scheduleMap{font-family:var(--display);font-size:18px;text-transform:uppercase;font-weight:600;margin:0;letter-spacing:.015em}.scheduleTime{font-size:10px;color:var(--muted);margin:3px 0 0;font-variant-numeric:tabular-nums}.badge{font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:.12em;background:var(--red);color:white;padding:4px 7px;flex-shrink:0}.rowMark{height:6px;width:6px;border:1px solid #515861;transform:rotate(45deg);margin-right:4px}.footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--border);margin:36px 0 0;padding:20px 0 30px;color:#737982;font-size:9px;line-height:1.9}.footerBrand{font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.2em;white-space:nowrap}.notice{margin:0;max-width:760px;text-align:right}.noscript{padding:20px;background:#331b20;color:var(--cream)}
+@media(min-width:1500px){.hero{min-height:500px}}@media(max-width:1050px){.shell{padding:0 26px}.schedule{grid-template-columns:repeat(2,minmax(0,1fr))}.intro p:last-child{max-width:240px}.heroBottom{grid-template-columns:minmax(0,1fr) 250px}.countdown{font-size:51px}.headerRule{margin:0 5px}.nextDetails{gap:14px}}@media(max-width:680px){.shell{padding:0 16px}.headerInner{height:74px;gap:11px}.emblem{width:29px;height:35px}.brand{font-size:24px}.brand small{font-size:8px}.headerRule,.pageLabel,.timezone{display:none}.headerRight{gap:0}.update{padding:9px 12px}.sectionNav{margin-top:18px;margin-bottom:19px}.activeTab{padding:11px 17px;font-size:10px}.navMeta{font-size:11px;gap:8px}.intro{margin:20px 0 18px}.intro p:last-child{display:none}h1{font-size:26px}.hero{min-height:510px;padding:20px}.heroBottom{grid-template-columns:1fr;gap:23px}.currentMap{font-size:clamp(54px,12vw,76px)}.mapJapanese{margin:10px 0 13px}.heroIndex{font-size:10px}.timer{padding:15px 18px}.countdown{font-size:50px;margin:4px 0 9px}.timerLabel{font-size:10px}.nextPanel{grid-template-columns:77px 1fr}.nextDetails{padding:13px 16px}.nextArrow{display:none}.nextName{font-size:27px}.nextTime{grid-column:1/-1;border-top:1px solid var(--border);text-align:left;padding:9px 16px;font-size:10px}.nextThumb{min-height:89px}.statusLine{font-size:9px;flex-wrap:wrap;margin-bottom:29px}.scheduleHead{align-items:start;flex-direction:column;gap:8px}.scheduleHead h2{font-size:18px}.rotationLegend{gap:10px;flex-wrap:wrap}.rotationLegend>span{width:100%;font-size:10px}.rotationStep{font-size:13px}.schedule{grid-template-columns:1fr;gap:16px}.footer{flex-direction:column;gap:7px;margin-top:28px}.notice{text-align:left}.scheduleItem{padding:13px 15px}}
+@media(prefers-reduced-motion:reduce){.progressFill,.hero:before{transition:none}}
+
+.modeNav{display:flex;gap:4px}.modeNav a{display:block;color:var(--muted);text-decoration:none;padding:13px 24px 15px;font-size:12px;font-weight:900;letter-spacing:.08em}.modeNav a:hover{color:var(--cream);background:#24282e}.modeNav a.activeTab{color:var(--cream);background:var(--red)}
+@media(max-width:680px){.modeNav a{padding:11px 13px;font-size:10px}.navMeta{display:none}}
+
+.hero{background:radial-gradient(ellipse at 75% 25%,#ed3c432b,transparent 60%),repeating-linear-gradient(120deg,transparent 0 88px,#ffffff04 88px 89px),#171b21}.hero:before{content:'MIX';inset:25px 28px auto auto;font-family:var(--display);font-size:250px;font-weight:900;line-height:1;color:#ffffff05;transform:skew(-8deg)}.hero:after{background:linear-gradient(0deg,#080c12b5,transparent)}.modeTitle{font-family:var(--display);font-weight:800;letter-spacing:.13em;color:var(--red);font-size:22px;margin:0 0 10px}.modeChip{font-size:10px;font-weight:700;color:var(--red);margin:0 0 5px}.nextThumb{display:grid;place-items:center;font-family:var(--display);font-size:27px;font-weight:800;color:var(--red);background:#ed3c430a}.schedule{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.scheduleItem{background:#181b20;border:1px solid var(--border);min-height:105px;padding:17px}.rotationLegend{font-size:11px;color:var(--muted);line-height:1.8;flex-wrap:wrap}.rotationLegend a,.notice a{color:var(--cream)}.currentMap{font-size:clamp(46px,6vw,80px);overflow-wrap:anywhere}.expired{padding:25px;background:#21191b;border:1px solid #714047;color:var(--cream);line-height:1.9}.expired a{color:var(--cream)}[hidden]{display:none!important}
+@media(max-width:1050px){.schedule{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){.schedule{grid-template-columns:1fr}.currentMap{font-size:54px}.hero:before{font-size:190px}.modeTitle{font-size:19px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="shell headerInner">
+<svg class="emblem" viewBox="0 0 48 52" aria-hidden="true"><path fill="currentColor" d="M24 1 2 44h14l4-8h-7l11-22 11 22h-7l4 8h14L24 1Z"/><path fill="currentColor" d="M21 42h6v8h-6z"/></svg>
+<div class="brand">APEX<span style="color:var(--red)"> / </span>MAPS<small>ROTATION INTELLIGENCE</small></div>
+<div class="headerRule"></div><span class="pageLabel">ミックステープ情報</span>
+<div class="headerRight"><span class="timezone">JST / UTC+09</span><button class="update" id="refreshButton" type="button" aria-label="マップ情報を更新"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M19 12a7 7 0 0 0-12-5L4 10m1 2a7 7 0 0 0 12 5l3-3"/></svg>更新</button></div>
+</div></header>
+<main class="shell">
+<div class="sectionNav"><nav class="modeNav" aria-label="ゲームモード"><a href="index.html">ランクリーグ</a><a href="mixtape.html" class="activeTab" aria-current="page">ミックステープ</a></nav><div class="navMeta"><span class="tinySquare"></span>MIXTAPE <span>/</span> ROTATION</div></div>
+<div class="intro"><div><p class="kicker">SWITCH THE GAME.</p><h1>次のモードを、把握しろ。</h1></div><p>モードとマップが、15分ごとに切り替わる。<br>すべての時刻は日本時間で表示。</p></div>
+<p id="expiredNotice" class="expired" role="status" hidden>予定の確認期限を過ぎたため、予測表示を停止しました。<a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">最新のローテーションを確認してください ↗</a></p><section class="hero" id="hero" aria-label="現在のミックステープ">
+<div class="heroCorners"></div><div class="heroTop"><span class="live"><i></i>ROTATION ESTIMATE</span><span class="heroIndex" id="heroIndex">MIXTAPE / 15 MIN</span></div>
+<div class="heroBottom"><div><p class="heroTag">現在の戦場</p><p class="modeTitle" id="currentMode">—</p><h2 class="currentMap" id="currentMap">LOADING</h2><p class="mapJapanese" id="mapJapanese">マップ情報を読み込み中</p><p class="currentTime" id="currentTime">—</p></div>
+<div class="timer"><span class="timerLabel">次のマップに切り替わるまで</span><strong class="countdown" id="countdown" role="timer" aria-label="切り替えまでの残り時間">--:--:--</strong><div class="progressTrack" aria-hidden="true"><div class="progressFill" id="progressFill"></div></div><div class="timerFoot"><span>ROTATION REMAINING</span><span id="remainingPercent">—</span></div></div></div>
+</section>
+<section class="nextPanel" aria-label="次のミックステープ"><div class="nextThumb" id="nextThumb" aria-hidden="true"></div><div class="nextDetails"><svg class="nextArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><div><div class="nextEyebrow">UP NEXT / 次の戦場</div><h2 class="nextName" id="nextMap">—</h2><p class="nextJapanese" id="nextJapanese">—</p></div></div><p class="nextTime" id="nextTime">—</p></section>
+<div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">取得済みの予定に基づく予測</span></div>
+<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後3時間のローテーション</h2></div><p>15分ごとに切り替え · 日本時間</p></div><div class="rotationLegend">基準データ確認: <span id="checkedAt"></span> · 自動同期なし · <a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">最新の予定を確認 ↗</a></div><div class="schedule" id="schedule"></div></section>
+<noscript><p class="noscript">マップと予定の表示にはJavaScriptを有効にしてください。</p></noscript>
+<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。<a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>取得時の循環を基に予測します。ゲーム内の変更は自動反映されません。基準データ確認から7日後に表示を停止します。</p></footer>
+</main>
+<script>
+'use strict';
+const TZ='Asia/Tokyo',DURATION_MINUTES=15;
+const MAPS=[{"name":"Estates","ja":"エステート","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Monument","ja":"モニュメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Barometer","ja":"バロメーター","mode":"Control","modeJa":"コントロール","code":"CTL"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Estates","ja":"エステート","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL"},{"name":"Skulltown","ja":"スカルタウン","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Fragment","ja":"フラグメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Caustic Treatment","ja":"コースティック処理施設","mode":"Control","modeJa":"コントロール","code":"CTL"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Skulltown","ja":"スカルタウン","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL"}];
+const ANCHOR=new Date(1791119700000);
+const CHECKED_AT=new Date(1791127244005);
+const VALID_UNTIL=new Date(1791732044005);
+const $=id=>document.getElementById(id);
+const dateFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+function formatRange(item){return dateFmt.format(item.start)+' ～ '+dateFmt.format(item.end);}
+function formatClock(ms){const t=Math.max(0,Math.floor(ms/1000));return [Math.floor(t/3600),Math.floor(t%3600/60),t%60].map(n=>String(n).padStart(2,'0')).join(':');}
+function buildSchedule(now=new Date()){
+ if(now<CHECKED_AT||now>=VALID_UNTIL)return [];
+ const block=DURATION_MINUTES*60000,elapsed=Math.floor((now-ANCHOR)/block);
+ const base=ANCHOR.getTime()+elapsed*block,index=((elapsed%MAPS.length)+MAPS.length)%MAPS.length;
+ const items=[];
+ for(let i=0;i<13;i++){
+  const start=new Date(base+i*block),end=new Date(start.getTime()+block);
+  if(end>VALID_UNTIL)break;
+  const mapIndex=(index+i)%MAPS.length;
+  items.push({...MAPS[mapIndex],mapIndex,start,end,isCurrent:i===0});
+ }
+ return items;
+}
+function textElement(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
+function renderSchedule(items){
+ const fragment=document.createDocumentFragment();
+ for(const item of items){
+  const row=document.createElement('article');row.className='scheduleItem'+(item.isCurrent?' now':'');
+  if(item.isCurrent)row.setAttribute('aria-current','true');
+  const details=document.createElement('div');
+  details.append(textElement('p','modeChip',item.modeJa),textElement('p','scheduleMap',item.name),textElement('p','scheduleTime',formatRange(item)));
+  row.append(details);
+  if(item.isCurrent)row.append(textElement('span','badge','現在'));
+  fragment.appendChild(row);
+ }
+ $('schedule').replaceChildren(fragment);
+}
+let lastBlock=null;
+function render(force=false){
+ const now=new Date(),items=buildSchedule(now),current=items[0],next=items[1];
+ $('checkedAt').textContent=dateFmt.format(CHECKED_AT);
+ $('expiredNotice').hidden=!!current;
+ $('hero').hidden=!current;$('nextThumb').parentElement.hidden=!next;
+ if(!current){$('schedule').replaceChildren();$('lastUpdated').textContent='予定の基準データを更新してください';return;}
+ const remaining=current.end-now,percent=Math.max(0,Math.min(100,remaining/900000*100));
+ $('countdown').textContent=formatClock(remaining);$('progressFill').style.width=percent+'%';$('remainingPercent').textContent=Math.ceil(percent)+'%';
+ if(force||lastBlock!==current.start.getTime()){
+  $('currentMap').textContent=current.name;$('mapJapanese').textContent=current.ja;$('currentMode').textContent=current.mode.toUpperCase()+' / '+current.modeJa;
+  $('currentTime').textContent=formatRange(current);$('heroIndex').textContent='MIXTAPE / 15 MIN';
+  if(next){$('nextMap').textContent=next.name;$('nextJapanese').textContent=next.modeJa+' / '+next.ja;$('nextTime').textContent=formatRange(next);$('nextThumb').textContent=next.code;}
+  $('lastUpdated').textContent='表示更新: '+dateFmt.format(now);
+  renderSchedule(items);lastBlock=current.start.getTime();
+ }
+}
+$('refreshButton').addEventListener('click',()=>render(true));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)render(true);});
+render();setInterval(()=>render(),1000);
+</script>
+</body>
+</html>
