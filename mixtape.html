@@ -25,6 +25,19 @@
 
 .hero{background:radial-gradient(ellipse at 75% 25%,#ed3c432b,transparent 60%),repeating-linear-gradient(120deg,transparent 0 88px,#ffffff04 88px 89px),#171b21}.hero:before{content:'MIX';inset:25px 28px auto auto;font-family:var(--display);font-size:250px;font-weight:900;line-height:1;color:#ffffff05;transform:skew(-8deg)}.hero:after{background:linear-gradient(0deg,#080c12b5,transparent)}.modeTitle{font-family:var(--display);font-weight:800;letter-spacing:.13em;color:var(--red);font-size:22px;margin:0 0 10px}.modeChip{font-size:10px;font-weight:700;color:var(--red);margin:0 0 5px}.nextThumb{display:grid;place-items:center;font-family:var(--display);font-size:27px;font-weight:800;color:var(--red);background:#ed3c430a}.schedule{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.scheduleItem{background:#181b20;border:1px solid var(--border);min-height:105px;padding:17px}.rotationLegend{font-size:11px;color:var(--muted);line-height:1.8;flex-wrap:wrap}.rotationLegend a,.notice a{color:var(--cream)}.currentMap{font-size:clamp(46px,6vw,80px);overflow-wrap:anywhere}[hidden]{display:none!important}
 @media(max-width:1050px){.schedule{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){.schedule{grid-template-columns:1fr}.currentMap{font-size:54px}.hero:before{font-size:190px}.modeTitle{font-size:19px}}
+
+/* Japanese map labels and image-backed rotation cards. */
+.hero:before{content:'';inset:0;font-size:initial;transform:none;background-image:var(--hero-image);background-size:cover;background-position:center;filter:saturate(.85)}
+.hero:after{background:linear-gradient(90deg,#080c12d9,transparent 85%),linear-gradient(0deg,#080c12f2,transparent 85%)}
+.currentMap{font-family:var(--body);font-size:clamp(30px,4.2vw,58px);font-weight:900;line-height:1.25;letter-spacing:.015em}
+.modeTitle{font-family:var(--body);font-size:16px;letter-spacing:.06em}
+.nextName{font-family:var(--body);font-size:23px;font-weight:900;line-height:1.4}
+.nextThumb{background-color:#262b31;background-image:linear-gradient(0deg,#080c1233,#080c1233),var(--next-image);background-size:cover;background-position:center}
+.scheduleItem{background-color:#181b20;background-image:linear-gradient(90deg,#080c12ed,#080c128c),var(--map-image);background-size:cover;background-position:center;min-height:132px}
+.scheduleItem.now{background-image:linear-gradient(90deg,#2c1115e8,#080c128c),var(--map-image);border-color:#ed3c4380}
+.scheduleMap{font-family:var(--body);font-size:16px;font-weight:700;line-height:1.5;color:var(--cream)}
+.scheduleTime{color:#c6cbd2;line-height:1.8}.modeChip{color:#ff9b9f}
+@media(max-width:680px){.currentMap{font-size:clamp(29px,7vw,42px)}.nextName{font-size:20px}.modeTitle{font-size:14px}.scheduleItem{min-height:125px}}
 </style>
 </head>
 <body>
@@ -44,14 +57,14 @@
 </section>
 <section class="nextPanel" aria-label="次のミックステープ"><div class="nextThumb" id="nextThumb" aria-hidden="true"></div><div class="nextDetails"><svg class="nextArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><div><div class="nextEyebrow">UP NEXT / 次の戦場</div><h2 class="nextName" id="nextMap">—</h2><p class="nextJapanese" id="nextJapanese">—</p></div></div><p class="nextTime" id="nextTime">—</p></section>
 <div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">取得済みの予定に基づく予測</span></div>
-<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後3時間のローテーション</h2></div><p>15分ごとに切り替え · 日本時間</p></div><div class="rotationLegend">時刻基準: 10/5 00:30 JST = Monument / TDM · データ確認: <span id="checkedAt"></span> · 自動同期なし · <a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">最新の予定を確認 ↗</a></div><div class="schedule" id="schedule"></div></section>
+<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後3時間のローテーション</h2></div><p>15分ごとに切り替え · 日本時間</p></div><div class="rotationLegend">時刻基準: 10/5 00:30 JST = モニュメント / チームデスマッチ · データ確認: <span id="checkedAt"></span> · 自動同期なし · <a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">最新の予定を確認 ↗</a></div><div class="schedule" id="schedule"></div></section>
 <noscript><p class="noscript">マップと予定の表示にはJavaScriptを有効にしてください。</p></noscript>
-<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。<a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>取得時の循環を基に予測します。ゲーム内の変更は自動反映されません。</p></footer>
+<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。<a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>背景は各エリアが属するマップの画像です。取得時の循環を基に予測します。ゲーム内の変更は自動反映されません。</p></footer>
 </main>
 <script>
 'use strict';
 const TZ='Asia/Tokyo',DURATION_MINUTES=15;
-const MAPS=[{"name":"Estates","ja":"エステート","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Monument","ja":"モニュメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Barometer","ja":"バロメーター","mode":"Control","modeJa":"コントロール","code":"CTL"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Estates","ja":"エステート","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL"},{"name":"Skulltown","ja":"スカルタウン","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Fragment","ja":"フラグメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Caustic Treatment","ja":"コースティック処理施設","mode":"Control","modeJa":"コントロール","code":"CTL"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN"},{"name":"Skulltown","ja":"スカルタウン","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL"}];
+const MAPS=[{"name":"Estates","ja":"エステート","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"},{"name":"Monument","ja":"モニュメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Barometer","ja":"バロメーター","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Storm_Point.png"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Estates","ja":"エステート","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"},{"name":"Skulltown","ja":"スカルタウン","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Kings_Canyon.png"},{"name":"Fragment","ja":"フラグメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Caustic Treatment","ja":"コースティック処理施設","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Kings_Canyon.png"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Skulltown","ja":"スカルタウン","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Kings_Canyon.png"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"}];
 // Screenshot baseline: 2026-10-05 00:30 JST = Monument / TDM (MAPS[1]).
 const ANCHOR=new Date('2026-10-05T00:15:00+09:00');
 const CHECKED_AT=new Date(1791127244005);
@@ -77,7 +90,8 @@ function renderSchedule(items){
   const row=document.createElement('article');row.className='scheduleItem'+(item.isCurrent?' now':'');
   if(item.isCurrent)row.setAttribute('aria-current','true');
   const details=document.createElement('div');
-  details.append(textElement('p','modeChip',item.modeJa),textElement('p','scheduleMap',item.name),textElement('p','scheduleTime',formatRange(item)));
+  details.append(textElement('p','modeChip',item.modeJa),textElement('p','scheduleMap',item.ja),textElement('p','scheduleTime',formatRange(item)));
+  row.style.setProperty('--map-image',`url("${item.image}")`);
   row.append(details);
   if(item.isCurrent)row.append(textElement('span','badge','現在'));
   fragment.appendChild(row);
@@ -93,9 +107,10 @@ function render(force=false){
  const remaining=current.end-now,percent=Math.max(0,Math.min(100,remaining/900000*100));
  $('countdown').textContent=formatClock(remaining);$('progressFill').style.width=percent+'%';$('remainingPercent').textContent=Math.ceil(percent)+'%';
  if(force||lastBlock!==current.start.getTime()){
-  $('currentMap').textContent=current.name;$('mapJapanese').textContent=current.ja;$('currentMode').textContent=current.mode.toUpperCase()+' / '+current.modeJa;
+  $('currentMap').textContent=current.ja;$('mapJapanese').textContent='ミックステープ · 15分ローテーション';$('currentMode').textContent=current.modeJa;
+  $('hero').style.setProperty('--hero-image',`url("${current.image}")`);
   $('currentTime').textContent=formatRange(current);$('heroIndex').textContent='MIXTAPE / 15 MIN';
-  if(next){$('nextMap').textContent=next.name;$('nextJapanese').textContent=next.modeJa+' / '+next.ja;$('nextTime').textContent=formatRange(next);$('nextThumb').textContent=next.code;}
+  if(next){$('nextMap').textContent=next.ja;$('nextJapanese').textContent=next.modeJa;$('nextTime').textContent=formatRange(next);$('nextThumb').textContent='';$('nextThumb').style.setProperty('--next-image',`url("${next.image}")`);}
   $('lastUpdated').textContent='表示更新: '+dateFmt.format(now);
   renderSchedule(items);lastBlock=current.start.getTime();
  }
