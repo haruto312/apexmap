@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111316">
+<meta name="description" content="Apex Legends ランクマップの予定を日本時間で表示する非公式ダッシュボード">
+<title>Apex ランクマップ — Rotation Board</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+:root{color-scheme:dark;--red:#ed3c43;--cream:#ece9e1;--muted:#989ca3;--border:#34383d;--display:'Barlow Condensed','Arial Narrow',sans-serif;--body:'Noto Sans JP',system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#111316;color:var(--cream);font-family:var(--body);font-size:13px}body:before{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,#ffffff02 3px 4px);z-index:5}button{font:inherit}button:focus-visible,a:focus-visible{outline:3px solid var(--cream);outline-offset:5px}button{cursor:pointer}svg{display:block} .shell{max-width:1440px;margin:auto;padding:0 48px}
+.header{border-bottom:1px solid var(--border);background:#15171b}.headerInner{height:86px;display:flex;align-items:center;gap:18px}.emblem{width:39px;height:44px;color:var(--red)}.brand{font-family:var(--display);font-size:30px;letter-spacing:.06em;font-weight:800;line-height:.85}.brand small{display:block;font-size:10px;letter-spacing:.36em;margin-top:8px;color:var(--muted)}.headerRule{height:28px;width:1px;background:var(--border);margin:0 17px}.pageLabel{font-size:11px;letter-spacing:.16em;font-weight:700}.headerRight{margin-left:auto;display:flex;align-items:center;gap:25px}.timezone{font-family:var(--display);font-size:15px;letter-spacing:.12em;color:var(--muted)}.update{background:transparent;border:1px solid #54585e;color:var(--cream);padding:10px 16px;display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700}.update:hover{background:var(--red);border-color:var(--red)}.update svg{width:13px;height:13px}
+.sectionNav{display:flex;align-items:center;justify-content:space-between;margin-top:29px;margin-bottom:22px;border-bottom:1px solid var(--border)}.activeTab{position:relative;padding:13px 24px 15px;background:var(--red);font-size:12px;font-weight:900;letter-spacing:.13em;clip-path:polygon(0 0,calc(100% - 13px) 0,100% 13px,100% 100%,0 100%)}.navMeta{display:flex;gap:16px;align-items:center;color:var(--muted);font-family:var(--display);font-size:13px;letter-spacing:.13em}.tinySquare{width:5px;height:5px;background:var(--red)}
+.intro{display:flex;justify-content:space-between;align-items:end;margin:29px 0 22px}.kicker{font-family:var(--display);font-weight:600;letter-spacing:.23em;color:var(--red);font-size:12px;margin:0 0 7px}h1{font-size:clamp(25px,3vw,36px);font-weight:900;letter-spacing:.025em;margin:0}.intro p:last-child{color:var(--muted);font-size:11px;line-height:1.7;margin:0;text-align:right}
+.hero{position:relative;min-height:450px;border:1px solid #4c4c4a;background:#252a2f;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:26px 30px 32px;isolation:isolate}.hero:before{content:'';position:absolute;inset:0;z-index:-2;background-image:var(--hero-image);background-size:cover;background-position:center 42%;transition:opacity .2s}.hero:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#080c12c9,transparent 80%),linear-gradient(0deg,#080c12f5,transparent 90%)}.heroCorners{position:absolute;inset:9px;pointer-events:none;background:linear-gradient(var(--cream),var(--cream)) left top/19px 2px no-repeat,linear-gradient(var(--cream),var(--cream)) left top/2px 19px no-repeat,linear-gradient(var(--cream),var(--cream)) right bottom/19px 2px no-repeat,linear-gradient(var(--cream),var(--cream)) right bottom/2px 19px no-repeat;opacity:.55}.heroTop{display:flex;justify-content:space-between;align-items:center}.live{display:flex;gap:8px;align-items:center;font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.13em;background:#101216b8;padding:8px 12px;border-left:3px solid var(--red)}.live i{width:6px;height:6px;background:var(--red);box-shadow:0 0 10px #ed3c4355}.heroIndex{font-family:var(--display);color:#ffffff8c;font-size:13px;letter-spacing:.15em}.heroBottom{display:grid;grid-template-columns:minmax(0,1fr) 285px;align-items:end;gap:30px}.heroTag{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.12em;margin:0 0 12px;font-weight:700}.heroTag:before{content:'';width:21px;height:3px;background:var(--red)}.currentMap{font-family:var(--display);text-transform:uppercase;font-weight:800;font-size:clamp(52px,6.7vw,96px);letter-spacing:-.025em;line-height:.88;margin:0;text-shadow:0 2px 24px #0005}.mapJapanese{margin:14px 0 20px;color:#d8d8d6;font-size:12px;font-weight:500;letter-spacing:.13em}.currentTime{margin:0;color:#c3c4c7;font-size:11px;line-height:1.8}.timer{background:#11151ae6;border-top:3px solid var(--red);padding:21px 23px 18px;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}.timerLabel{font-size:10px;font-weight:700;letter-spacing:.08em;color:#b6b9bf}.countdown{display:block;font-family:var(--display);font-weight:700;font-size:59px;letter-spacing:.025em;line-height:1.1;margin:8px 0 12px;font-variant-numeric:tabular-nums}.progressTrack{height:3px;background:#ffffff19;overflow:hidden}.progressFill{height:100%;background:var(--red);width:0;transition:width 1s linear}.timerFoot{display:flex;justify-content:space-between;margin-top:9px;font-family:var(--display);color:var(--muted);font-size:10px;letter-spacing:.13em}
+.nextPanel{display:grid;grid-template-columns:100px 1fr auto;min-height:94px;align-items:center;border:1px solid var(--border);border-top:0;background:#1b1e23}.nextThumb{height:100%;min-height:94px;background-image:linear-gradient(90deg,transparent,#1b1e234d),var(--next-image);background-size:cover;background-position:center;border-right:1px solid var(--border)}.nextDetails{padding:13px 23px;display:flex;align-items:center;gap:27px}.nextEyebrow{font-family:var(--display);font-size:11px;font-weight:700;color:var(--red);letter-spacing:.16em}.nextName{font-family:var(--display);font-size:30px;text-transform:uppercase;line-height:1;font-weight:700;margin:5px 0 0}.nextJapanese{font-size:10px;color:var(--muted);margin:6px 0 0}.nextArrow{width:19px;height:19px;color:#747a83}.nextTime{font-size:11px;color:#b5b8bd;padding:15px 28px;text-align:right;line-height:1.9;margin:0}.statusLine{display:flex;justify-content:space-between;color:#787f89;margin:12px 0 37px;font-size:10px;gap:12px}.statusNote{color:#b9aa88}
+.scheduleHead{display:flex;align-items:end;justify-content:space-between;margin-bottom:17px;gap:16px}.scheduleTitle{display:flex;align-items:center;gap:12px}.sectionNumber{font-family:var(--display);color:var(--red);font-size:13px;font-weight:600;letter-spacing:.1em;border-right:1px solid var(--border);padding-right:12px}.scheduleHead h2{font-size:19px;margin:0;font-weight:900}.scheduleHead p{color:var(--muted);font-size:10px;margin:0}.rotationLegend{display:flex;gap:17px;align-items:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 0;margin-bottom:23px}.rotationLegend>span{font-family:var(--display);color:#757d88;font-size:11px;letter-spacing:.16em}.rotationStep{font-family:var(--display);text-transform:uppercase;color:#aeb3ba;font-size:14px;letter-spacing:.03em}.rotationChevron{color:var(--red)}
+.schedule{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.dayGroup{background:#181b20;border:1px solid #2c3138}.dayHeading{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:#20242a;border-bottom:1px solid var(--border)}.dayHeading h3{font-size:11px;font-weight:700;margin:0;letter-spacing:.03em}.dayHeading span{font-family:var(--display);font-size:10px;letter-spacing:.11em;color:var(--muted)}.scheduleItem{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;border-bottom:1px solid #ffffff08;min-height:69px}.scheduleItem:last-child{border-bottom:0}.scheduleItem.now{background:linear-gradient(90deg,#ed3c431c,transparent);box-shadow:inset 3px 0 var(--red)}.scheduleMap{font-family:var(--display);font-size:18px;text-transform:uppercase;font-weight:600;margin:0;letter-spacing:.015em}.scheduleTime{font-size:10px;color:var(--muted);margin:3px 0 0;font-variant-numeric:tabular-nums}.badge{font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:.12em;background:var(--red);color:white;padding:4px 7px;flex-shrink:0}.rowMark{height:6px;width:6px;border:1px solid #515861;transform:rotate(45deg);margin-right:4px}.footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--border);margin:36px 0 0;padding:20px 0 30px;color:#737982;font-size:9px;line-height:1.9}.footerBrand{font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.2em;white-space:nowrap}.notice{margin:0;max-width:760px;text-align:right}.noscript{padding:20px;background:#331b20;color:var(--cream)}
+@media(min-width:1500px){.hero{min-height:500px}}@media(max-width:1050px){.shell{padding:0 26px}.schedule{grid-template-columns:repeat(2,minmax(0,1fr))}.intro p:last-child{max-width:240px}.heroBottom{grid-template-columns:minmax(0,1fr) 250px}.countdown{font-size:51px}.headerRule{margin:0 5px}.nextDetails{gap:14px}}@media(max-width:680px){.shell{padding:0 16px}.headerInner{height:74px;gap:11px}.emblem{width:29px;height:35px}.brand{font-size:24px}.brand small{font-size:8px}.headerRule,.pageLabel,.timezone{display:none}.headerRight{gap:0}.update{padding:9px 12px}.sectionNav{margin-top:18px;margin-bottom:19px}.activeTab{padding:11px 17px;font-size:10px}.navMeta{font-size:11px;gap:8px}.intro{margin:20px 0 18px}.intro p:last-child{display:none}h1{font-size:26px}.hero{min-height:510px;padding:20px}.heroBottom{grid-template-columns:1fr;gap:23px}.currentMap{font-size:clamp(54px,12vw,76px)}.mapJapanese{margin:10px 0 13px}.heroIndex{font-size:10px}.timer{padding:15px 18px}.countdown{font-size:50px;margin:4px 0 9px}.timerLabel{font-size:10px}.nextPanel{grid-template-columns:77px 1fr}.nextDetails{padding:13px 16px}.nextArrow{display:none}.nextName{font-size:27px}.nextTime{grid-column:1/-1;border-top:1px solid var(--border);text-align:left;padding:9px 16px;font-size:10px}.nextThumb{min-height:89px}.statusLine{font-size:9px;flex-wrap:wrap;margin-bottom:29px}.scheduleHead{align-items:start;flex-direction:column;gap:8px}.scheduleHead h2{font-size:18px}.rotationLegend{gap:10px;flex-wrap:wrap}.rotationLegend>span{width:100%;font-size:10px}.rotationStep{font-size:13px}.schedule{grid-template-columns:1fr;gap:16px}.footer{flex-direction:column;gap:7px;margin-top:28px}.notice{text-align:left}.scheduleItem{padding:13px 15px}}
+@media(prefers-reduced-motion:reduce){.progressFill,.hero:before{transition:none}}
+</style>
+</head>
+<body>
+<header class="header"><div class="shell headerInner">
+<svg class="emblem" viewBox="0 0 48 52" aria-hidden="true"><path fill="currentColor" d="M24 1 2 44h14l4-8h-7l11-22 11 22h-7l4 8h14L24 1Z"/><path fill="currentColor" d="M21 42h6v8h-6z"/></svg>
+<div class="brand">APEX<span style="color:var(--red)"> / </span>MAPS<small>ROTATION INTELLIGENCE</small></div>
+<div class="headerRule"></div><span class="pageLabel">ランクマップ情報</span>
+<div class="headerRight"><span class="timezone">JST / UTC+09</span><button class="update" id="refreshButton" type="button" aria-label="マップ情報を更新"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M19 12a7 7 0 0 0-12-5L4 10m1 2a7 7 0 0 0 12 5l3-3"/></svg>更新</button></div>
+</div></header>
+<main class="shell">
+<div class="sectionNav"><div class="activeTab">ランクリーグ</div><div class="navMeta"><span class="tinySquare"></span>BATTLE ROYALE <span>/</span> ROTATION</div></div>
+<div class="intro"><div><p class="kicker">KNOW THE FIELD.</p><h1>次の戦場を、把握しろ。</h1></div><p>現在のマップと、次のローテーション。<br>すべての時刻は日本時間で表示。</p></div>
+<section class="hero" id="hero" aria-label="現在のランクマップ">
+<div class="heroCorners"></div><div class="heroTop"><span class="live"><i></i>CURRENT ROTATION</span><span class="heroIndex" id="heroIndex">MAP — / 03</span></div>
+<div class="heroBottom"><div><p class="heroTag">現在の戦場</p><h2 class="currentMap" id="currentMap">LOADING</h2><p class="mapJapanese" id="mapJapanese">マップ情報を読み込み中</p><p class="currentTime" id="currentTime">—</p></div>
+<div class="timer"><span class="timerLabel">次のマップに切り替わるまで</span><strong class="countdown" id="countdown" role="timer" aria-label="切り替えまでの残り時間">--:--:--</strong><div class="progressTrack" aria-hidden="true"><div class="progressFill" id="progressFill"></div></div><div class="timerFoot"><span>ROTATION REMAINING</span><span id="remainingPercent">—</span></div></div></div>
+</section>
+<section class="nextPanel" aria-label="次のランクマップ"><div class="nextThumb" id="nextThumb" aria-hidden="true"></div><div class="nextDetails"><svg class="nextArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><div><div class="nextEyebrow">UP NEXT / 次の戦場</div><h2 class="nextName" id="nextMap">—</h2><p class="nextJapanese" id="nextJapanese">—</p></div></div><p class="nextTime" id="nextTime">—</p></section>
+<div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">固定スケジュールに基づく予測 · API未接続</span></div>
+<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後7日間のローテーション</h2></div><p>4時間30分ごとに切り替え · 日本時間</p></div><div class="rotationLegend"><span>ROTATION ORDER</span><span class="rotationStep">World's Edge</span><span class="rotationChevron" aria-hidden="true">›</span><span class="rotationStep">Olympus</span><span class="rotationChevron" aria-hidden="true">›</span><span class="rotationStep">Broken Moon</span><span class="rotationChevron" aria-hidden="true">↻</span></div><div class="schedule" id="schedule"></div></section>
+<noscript><p class="noscript">マップと予定の表示にはJavaScriptを有効にしてください。</p></noscript>
+<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。背景画像はEA配信画像を使用。<br>元のHTMLの固定ローテーションを引き継いでおり、実際のゲーム内スケジュールと異なる場合があります。</p></footer>
+</main>
+<script>
+'use strict';
+const TZ='Asia/Tokyo';
+const DURATION_MINUTES=270;
+const MAPS=[
+ {name:"World's Edge",ja:'ワールズエッジ',image:'https://drop-assets.ea.com/images/1ANGzrckUvxyjMXBgcF33n/038523604527b713e593e09dc125d2c8/Apex_S30-Season_Worlds-Edge-16x9.jpg?im=AspectCrop%3D%2816%2C9%29%2CxPosition%3D0.4973958333333333%2CyPosition%3D0.38796296296296295'},
+ {name:'Olympus',ja:'オリンパス',image:'https://drop-assets.ea.com/images/3M9j96pECUCI1nAL06ouH5/ccc3de072fcc869d6c0686d0dae96b7a/Apex_S27-Season_Olympus-16x9.jpg?im=AspectCrop%3D%2816%2C9%29%2CxPosition%3D1%2CyPosition%3D1'},
+ {name:'Broken Moon',ja:'ブロークンムーン',image:'https://drop-assets.ea.com/images/7A38YY4DSVUVne751E02SP/1018cbc3a7d00d862d14d18677fb7b8a/S21_-_BM_-_Quarantine_Zone_2.png?im=AspectCrop%3D%2816%2C9%29%2CxPosition%3D0.5%2CyPosition%3D0.5'}
+];
+const ANCHOR=new Date('2026-09-19T15:30:00.000Z');
+const $=id=>document.getElementById(id);
+const dateFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+const dayFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,month:'numeric',day:'numeric',weekday:'short'});
+const clockFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+const dateKeyFmt=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+function formatRange(item){return `${dateFmt.format(item.start)} ～ ${dateFmt.format(item.end)}`;}
+function formatClock(ms){const t=Math.max(0,Math.floor(ms/1000));return [Math.floor(t/3600),Math.floor(t%3600/60),t%60].map(n=>String(n).padStart(2,'0')).join(':');}
+function buildSchedule(now=new Date()){
+ const block=DURATION_MINUTES*60000;
+ const elapsed=Math.floor((now-ANCHOR)/block);
+ const base=ANCHOR.getTime()+elapsed*block;
+ const index=((elapsed%MAPS.length)+MAPS.length)%MAPS.length;
+ const limit=now.getTime()+7*86400000;
+ const items=[];
+ for(let i=0;i<80;i++){
+  const start=new Date(base+i*block);
+  if(start.getTime()>=limit)break;
+  const mapIndex=(index+i)%MAPS.length;
+  items.push({...MAPS[mapIndex],mapIndex,start,end:new Date(start.getTime()+block),isCurrent:i===0});
+ }
+ return items;
+}
+function textElement(tag,className,text){const element=document.createElement(tag);element.className=className;element.textContent=text;return element;}
+function renderSchedule(items,now){
+ const fragment=document.createDocumentFragment();
+ const today=dateKeyFmt.format(now);
+ const groups=new Map();
+ for(const item of items){const key=dateKeyFmt.format(item.start);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(item);}
+ for(const [key,entries] of groups){
+  const section=document.createElement('section');section.className='dayGroup';
+  const heading=document.createElement('div');heading.className='dayHeading';
+  heading.append(textElement('h3','',dayFmt.format(entries[0].start)),textElement('span','',key===today?'TODAY':'JST'));
+  section.appendChild(heading);
+  for(const item of entries){
+   const row=document.createElement('article');row.className='scheduleItem'+(item.isCurrent?' now':'');
+   if(item.isCurrent)row.setAttribute('aria-current','true');
+   const details=document.createElement('div');
+   const crossesDate=dateKeyFmt.format(item.start)!==dateKeyFmt.format(item.end);
+   const startOnPriorDay=item.isCurrent&&key!==today;
+   const timeText=(startOnPriorDay?dayFmt.format(item.start)+' ':'')+clockFmt.format(item.start)+' — '+(crossesDate?dayFmt.format(item.end)+' ':'')+clockFmt.format(item.end);
+   details.append(textElement('p','scheduleMap',item.name),textElement('p','scheduleTime',timeText));
+   const mark=textElement('span',item.isCurrent?'badge':'rowMark',item.isCurrent?'現在':'');
+   if(!item.isCurrent)mark.setAttribute('aria-hidden','true');
+   row.append(details,mark);section.appendChild(row);
+  }
+  fragment.appendChild(section);
+ }
+ $('schedule').replaceChildren(fragment);
+}
+let lastBlock=null;
+let lastDay=null;
+function render(force=false){
+ const now=new Date();const items=buildSchedule(now);const current=items[0],next=items[1];
+ if(!current||!next)return;
+ const remaining=current.end-now;
+ const percent=Math.max(0,Math.min(100,remaining/(DURATION_MINUTES*60000)*100));
+ $('countdown').textContent=formatClock(remaining);
+ $('progressFill').style.width=percent+'%';
+ $('remainingPercent').textContent=Math.ceil(percent)+'%';
+ const day=dateKeyFmt.format(now);
+ if(force||lastBlock!==current.start.getTime()||lastDay!==day){
+  $('currentMap').textContent=current.name;$('mapJapanese').textContent=current.ja;
+  $('currentTime').textContent=formatRange(current);
+  $('heroIndex').textContent=`MAP ${String(current.mapIndex+1).padStart(2,'0')} / 03`;
+  $('hero').style.setProperty('--hero-image',`url("${current.image}")`);
+  $('nextMap').textContent=next.name;$('nextJapanese').textContent=next.ja;
+  $('nextTime').textContent=formatRange(next);
+  $('nextThumb').style.setProperty('--next-image',`url("${next.image}")`);
+  $('lastUpdated').textContent='更新: '+dateFmt.format(now);
+  renderSchedule(items,now);lastBlock=current.start.getTime();lastDay=day;
+ }
+}
+$('refreshButton').addEventListener('click',()=>render(true));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)render(true);});
+render();setInterval(()=>render(),1000);
+</script>
+</body>
+</html>
