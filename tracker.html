@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111316">
+  <meta name="description" content="自分の戦績、ランク、レジェンドと次の戦場を確認する、Apex Legends 非公式パーソナルトラッカー。">
+  <meta name="referrer" content="no-referrer">
+  <title>APEX / TRACKER — マイトラッカー</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tracker/style.css">
+  <script type="module" src="tracker/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">コンテンツへ移動</a>
+  <header class="header"><div class="shell header-inner">
+    <a class="brand" href="tracker.html" aria-label="Apex マイトラッカー"><svg viewBox="0 0 48 52" aria-hidden="true"><path fill="currentColor" d="M24 1 2 44h14l4-8h-7l11-22 11 22h-7l4 8h14L24 1Z M21 42h6v8h-6z"/></svg><span>APEX<span class="red"> / </span>TRACKER<small>PERSONAL COMBAT INTELLIGENCE</small></span></a>
+    <span class="header-tag">YOUR STATS. YOUR STORY.</span>
+    <div class="header-actions"><span class="time" id="clock">JST / UTC+09</span><button class="button ghost" id="settingsButton" type="button"><span aria-hidden="true">⚙</span> 接続設定</button></div>
+  </div></header>
+  <main class="shell" id="main">
+    <div class="nav-line"><nav aria-label="ページ"><a href="tracker.html" class="active" aria-current="page">マイトラッカー</a><a href="index.html">ランクマップ</a><a href="mixtape.html">ミックステープ</a></nav><span class="nav-caption"><i></i> PLAYER INTELLIGENCE / 01</span></div>
+    <div class="intro"><div><p class="eyebrow">PERSONAL COMMAND CENTER</p><h1><span>次の一戦を、</span><span>もっと強く。</span></h1></div><div class="intro-right"><span class="connection" id="connection">DEMO MODE</span><button class="button" id="refreshButton" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M19 12a7 7 0 0 0-12-5L4 10m1 2a7 7 0 0 0 12 5l3-3"/></svg>戦績を更新</button></div></div>
+    <div class="notice" id="notice" role="status">サンプルデータを表示しています。接続設定からEA IDとAPIキーを入力すると、自分の戦績に切り替わります。</div>
+    <section class="overview" aria-label="プレイヤー概要">
+      <div class="player-panel panel">
+        <div class="hero-decoration" aria-hidden="true"><span>APEX</span></div><img class="hero-portrait" id="heroPortrait" alt="" referrerpolicy="no-referrer">
+        <div class="hero-top"><span class="micro">PLAYER BANNER</span><span class="status-pill" id="playerStatus"><i></i> DEMO PLAYER</span></div>
+        <div class="player-copy"><p class="player-platform" id="platformLabel">PC / EA ACCOUNT</p><h2 id="playerName">PLAYER_01</h2><p class="player-id" id="playerUid">YOUR PERSONAL TRACKER</p><div class="level-row"><span class="level-badge"><small>LEVEL</small><b id="playerLevel">428</b></span><div class="level-info"><span>次のレベルまで <b id="levelPercent">62%</b></span><div class="progress"><span id="levelProgress"></span></div><small id="legendLabel">SELECTED LEGEND / WRAITH</small></div></div></div>
+        <div class="hero-bottom"><span><i class="red-line"></i> DROP IN. STAND OUT.</span><span id="updatedAt">SAMPLE / 実際の戦績ではありません</span></div>
+      </div>
+      <div class="rank-panel panel"><div class="section-top"><span class="micro">RANKED LEAGUE</span><span class="red micro">BATTLE ROYALE</span></div><div class="rank-icon-wrap"><img id="rankIcon" alt="ランクバッジ" hidden><span class="rank-fallback" id="rankFallback" aria-hidden="true">◇</span></div><h2 id="rankName">DIAMOND IV</h2><p class="rank-sub">現在のランク</p><div class="rank-score"><b id="rankScore">11,420</b><span>RP</span></div><div class="rank-foot"><span>前回取得から</span><strong id="rankDelta">—</strong></div></div>
+    </section>
+    <section class="stats-grid" aria-label="取得できた合計トラッカー">
+      <article class="stat"><div><span class="stat-mark" aria-hidden="true">⌖</span><span class="micro">TOTAL KILLS</span></div><strong id="totalKills">8,642</strong><p>取得済みキル数</p></article>
+      <article class="stat"><div><span class="stat-mark" aria-hidden="true">◈</span><span class="micro">TOTAL DAMAGE</span></div><strong id="totalDamage">2,418,930</strong><p>取得済みダメージ</p></article>
+      <article class="stat"><div><span class="stat-mark" aria-hidden="true">♜</span><span class="micro">TOTAL WINS</span></div><strong id="totalWins">—</strong><p>通算勝利数（取得時のみ）</p></article>
+      <article class="stat"><div><span class="stat-mark" aria-hidden="true">↗</span><span class="micro">K / D RATIO</span></div><strong id="totalKd">—</strong><p>K/D（取得時のみ）</p></article>
+    </section>
+    <p class="data-note">表示中のトラッカーなど、APIで取得できた値のみ表示。ゲーム内の通算値と異なる場合があります。未取得の値は「—」。</p>
+    <div class="analysis-grid">
+      <section class="panel chart-panel" aria-labelledby="rankHistoryTitle"><div class="section-heading"><div><span class="section-number">01 /</span><h2 id="rankHistoryTitle">ランクの軌跡</h2></div><span class="micro" id="historyCount">LOCAL SNAPSHOTS</span></div><div class="chart-head"><div><span class="micro muted">RANK POINTS</span><strong id="chartScore">11,420 <small>RP</small></strong></div><span class="chart-label" id="chartLabel">サンプル推移</span></div><div id="rankChart" class="chart" role="img" aria-label="ランクポイントの推移"></div><div class="chart-footer"><span id="chartStart">—</span><span id="chartEnd">—</span></div><p class="panel-note">この端末で取得したRPを記録します。対戦履歴ではありません。</p></section>
+      <section class="panel selected-panel" aria-labelledby="selectedTitle"><div class="section-heading"><div><span class="section-number">02 /</span><h2 id="selectedTitle">選択中のレジェンド</h2></div><span class="micro red">ACTIVE</span></div><div class="selected-heading"><img id="selectedIcon" alt="" referrerpolicy="no-referrer"><div><h3 id="selectedName">WRAITH</h3><span id="selectedJapanese">レイス</span></div></div><div id="selectedTrackers" class="tracker-list"></div><p class="panel-note">ゲーム内のバナーに表示しているトラッカーが中心です。</p></section>
+    </div>
+    <section class="legend-section" aria-labelledby="legendsTitle"><div class="section-heading"><div><span class="section-number">03 /</span><h2 id="legendsTitle">レジェンド一覧</h2><span class="count" id="legendCount">08</span></div><label class="sort">並び順 <select id="legendSort"><option value="kills">キル数</option><option value="name">名前</option></select></label></div><div class="legends" id="legends"></div></section>
+    <section class="maps-section" aria-labelledby="mapsTitle"><div class="section-heading"><div><span class="section-number">04 /</span><h2 id="mapsTitle">次の戦場</h2></div><a class="text-link" href="index.html">マップの予定を見る <span aria-hidden="true">↗</span></a></div><div class="maps" id="maps"></div><p class="data-note" id="mapNote">接続後にAPIから現在のマップを取得します。</p></section>
+    <div class="tools"><label><input id="autoRefresh" type="checkbox"> 4分ごとに自動更新</label><button class="text-link" id="exportButton" type="button">記録をJSONで書き出す ↗</button><button class="text-link" id="disconnectButton" type="button" hidden>接続を解除</button></div>
+    <footer><span class="footer-brand">APEX / TRACKER <small>UNOFFICIAL PERSONAL PROJECT</small></span><p><a href="https://apexlegendsstatus.com" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>画像：<a href="https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub" target="_blank" rel="noopener noreferrer">EA公式サイト</a> / API提供画像 · © Electronic Arts / Respawn Entertainment</p></footer>
+    <noscript><p class="notice">戦績の表示にはJavaScriptを有効にしてください。</p></noscript>
+  </main>
+  <dialog id="settingsDialog" aria-labelledby="settingsTitle"><form id="settingsForm"><div class="dialog-head"><div><p class="eyebrow">CONNECT YOUR ACCOUNT</p><h2 id="settingsTitle">自分の戦績をつなぐ。</h2></div><button class="close" id="closeSettings" type="button" aria-label="接続設定を閉じる">×</button></div><p class="dialog-description">プレイヤー情報はこの端末に保存。APIキーは保存せず、このページを開いている間だけ使用します。</p><label>プラットフォーム<select id="platformInput"><option value="PC">PC（EA / Origin）</option><option value="PS4">PlayStation</option><option value="X1">Xbox</option><option value="SWITCH">Switch（UID必須）</option></select></label><label>プレイヤー名 / UID<input id="playerInput" maxlength="64" placeholder="EA / Origin ID" required autocomplete="off" spellcheck="false"></label><label class="checkbox-label"><input id="uidInput" type="checkbox"> プレイヤー名の代わりにUIDを使用する</label><p class="field-help">Steamでも、連携しているEA / Origin IDを入力してください。</p><label>接続方法<select id="connectionMode"><option value="direct">APIキーで直接接続</option><option value="proxy">専用プロキシを使用</option></select></label><div id="directFields"><label>APIキー<input id="keyInput" type="password" placeholder="apexlegendsapi.com のAPIキー" autocomplete="off" spellcheck="false"></label><p class="field-help">キーはApex Legends Status APIにだけ送信します。再読み込み後は再入力してください。</p></div><div id="proxyFields" hidden><label>プロキシURL<input id="proxyInput" type="url" placeholder="https://your-worker.workers.dev" autocomplete="off"></label><label>アクセストークン<input id="tokenInput" type="password" autocomplete="off"></label><p class="field-help">専用プロキシの設定方法はリポジトリのREADMEを参照してください。APIキーはプロキシ側で保持します。</p></div><p id="settingsError" class="form-error" role="alert"></p><div class="dialog-actions"><button class="button ghost" id="demoButton" type="button">デモを見る</button><button class="button primary" id="connectButton" type="submit">接続して戦績を取得 <span aria-hidden="true">↗</span></button></div><button class="clear-data" id="clearButton" type="button">この端末のプレイヤー設定・記録を削除</button></form></dialog>
+</body>
+</html>

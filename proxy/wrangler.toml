@@ -1,0 +1,11 @@
+name = "apexmap-personal-api"
+main = "worker.js"
+compatibility_date = "2026-10-05"
+
+[vars]
+ALLOWED_ORIGIN = "https://haruto312.github.io"
+PLAYER_UID = "YOUR_NUMERIC_PLAYER_UID"
+PLAYER_PLATFORM = "PC"
+
+# Set APEX_API_KEY and ACCESS_TOKEN through `wrangler secret put`.
+# Never add API keys or access tokens to this file.
