@@ -1,0 +1,42 @@
+{
+  "wraith": {
+    "portrait": "https://drop-assets.ea.com/images/55frFMnl3iqhxWEndIxQQZ/b894898ef2a40fb63aecdb1dc1dd06c5/Apex-Legends_Wraith-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/4J0UloeNHP6KD21QNrgMcj/cec0cb8949bb3cfe2149a6ca7c2d8a5d/apex-grid-tile-legends-Wraith.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/wraith"
+  },
+  "bloodhound": {
+    "portrait": "https://drop-assets.ea.com/images/74yW8P5W3TW2rYgivzDNZi/5a33b4a103c723f5592eae941b2ceaf8/Apex-Legends_Bloodhound-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/57Lw4lAodWsiNYTO1zvT6I/ec740d776b1d24172f5c9ed65f6d71af/apex-grid-tile-legends-Bloodhound.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/bloodhound"
+  },
+  "pathfinder": {
+    "portrait": "https://drop-assets.ea.com/images/4e9Ry1VEVWvaYc0SRpdmPE/66a8ae6d7368b25edaac46cc4c676bba/Apex-Legends_Pathfinder-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/6zanV6x46IQntfmXVJuxWs/08090312744a04dc243b138d0e8fe72a/apex-grid-tile-legends-Pathfinder.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/pathfinder"
+  },
+  "octane": {
+    "portrait": "https://drop-assets.ea.com/images/1jfSUKCMDTTuLX54SfhDyC/8804bffa5078a97fa4592e42d1f5fb74/Apex-Legends_Octane-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/15R4OhvkVEF8UgnM2x6iGO/cbfbadf786010c548a900b7cb2cc5960/apex-grid-tile-legends-Octane.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/octane"
+  },
+  "horizon": {
+    "portrait": "https://drop-assets.ea.com/images/5oqKa792gUkZKQd8T1iuXO/ee3f5ee6b5a6060fbac7b93bbe817f76/Apex-Legends_Horizon-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/3wEl6hnRZRfE0kpIhHe16Y/3dc98b90c70516c9a3ee563586c28d63/apex-grid-tile-legends-Horizon.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/horizon"
+  },
+  "lifeline": {
+    "portrait": "https://drop-assets.ea.com/images/4p3Gy6KLqxzkDCTL6m4jkR/f3543a0fa822db15007fa2fd8106ff79/Apex-Legends_Lifeline-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/2CB26KqVrs5AahlXuSCSgl/c1b815b029a81b654a1ea34497cf8926/apex-grid-tile-legends-Lifeline.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/lifeline"
+  },
+  "wattson": {
+    "portrait": "https://drop-assets.ea.com/images/6leMmMxxOrGrKPaol7J9HT/eb35916667a24ba2cce240d6d498c873/Apex-Legends_Wattson-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/35A7Ebi3AQ5jtXhZlXcgfm/ddc8902fd90e0cf669e9ce4182ab8e1f/apex-grid-tile-legends-Wattson.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/wattson"
+  },
+  "bangalore": {
+    "portrait": "https://drop-assets.ea.com/images/3eNAYWrYUCqmkqhCnygQon/db2cf41ea8cd6e88dbc731c12bb0aa9d/Apex-Legends_Bangalore-16x9.png",
+    "tile": "https://drop-assets.ea.com/images/59uaaKwAaQVFS2Z5o6JPoM/788687f62d13fdfd3afd71639dcea271/apex-grid-tile-legends-Bangalore.jpg",
+    "source": "https://www.ea.com/ja/games/apex-legends/apex-legends/characters-hub/bangalore"
+  }
+}

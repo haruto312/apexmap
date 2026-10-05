@@ -1,0 +1,11 @@
+{
+  "name": "apexmap-personal-tracker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check tracker/app.js && node --check tracker/model.js && node --check proxy/worker.js"
+  },
+  "engines": { "node": ">=22" }
+}
