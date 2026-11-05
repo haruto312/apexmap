@@ -38,12 +38,14 @@
 .scheduleMap{font-family:var(--body);font-size:16px;font-weight:700;line-height:1.5;color:var(--cream)}
 .scheduleTime{color:#c6cbd2;line-height:1.8}.modeChip{color:#ff9b9f}
 @media(max-width:680px){.currentMap{font-size:clamp(29px,7vw,42px)}.nextName{font-size:20px}.modeTitle{font-size:14px}.scheduleItem{min-height:125px}}
+
+.notice a{color:var(--cream)}
 </style>
 </head>
 <body>
 <header class="header"><div class="shell headerInner">
 <svg class="emblem" viewBox="0 0 48 52" aria-hidden="true"><path fill="currentColor" d="M24 1 2 44h14l4-8h-7l11-22 11 22h-7l4 8h14L24 1Z"/><path fill="currentColor" d="M21 42h6v8h-6z"/></svg>
-<div class="brand">APEX<span style="color:var(--red)"> / </span>MAPS<small>ROTATION INTELLIGENCE</small></div>
+<div class="brand">APEX<span style="color:var(--red)"> / </span>MAPS<small>SEASON 31 / CIPHER</small></div>
 <div class="headerRule"></div><span class="pageLabel">ミックステープ情報</span>
 <div class="headerRight"><span class="timezone">JST / UTC+09</span><button class="update" id="refreshButton" type="button" aria-label="マップ情報を更新"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M19 12a7 7 0 0 0-12-5L4 10m1 2a7 7 0 0 0 12 5l3-3"/></svg>更新</button></div>
 </div></header>
@@ -56,33 +58,22 @@
 <div class="timer"><span class="timerLabel">次のマップに切り替わるまで</span><strong class="countdown" id="countdown" role="timer" aria-label="切り替えまでの残り時間">--:--:--</strong><div class="progressTrack" aria-hidden="true"><div class="progressFill" id="progressFill"></div></div><div class="timerFoot"><span>ROTATION REMAINING</span><span id="remainingPercent">—</span></div></div></div>
 </section>
 <section class="nextPanel" aria-label="次のミックステープ"><div class="nextThumb" id="nextThumb" aria-hidden="true"></div><div class="nextDetails"><svg class="nextArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><div><div class="nextEyebrow">UP NEXT / 次の戦場</div><h2 class="nextName" id="nextMap">—</h2><p class="nextJapanese" id="nextJapanese">—</p></div></div><p class="nextTime" id="nextTime">—</p></section>
-<div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">取得済みの予定に基づく予測</span></div>
-<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後3時間のローテーション</h2></div><p>15分ごとに切り替え · 日本時間</p></div><div class="rotationLegend">時刻基準: 10/5 00:30 JST = モニュメント / チームデスマッチ · データ確認: <span id="checkedAt"></span> · 自動同期なし · <a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">最新の予定を確認 ↗</a></div><div class="schedule" id="schedule"></div></section>
+<div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">APIの現在・次のマップ ＋ 以降の予測</span></div>
+<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後3時間のローテーション</h2></div><p>15分ごとに切り替え · 日本時間</p></div><div class="rotationLegend">API取得: <span id="checkedAt"></span> · 1分ごとに最新データを確認 · <a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">最新の予定を確認 ↗</a></div><div class="schedule" id="schedule"></div></section>
 <noscript><p class="noscript">マップと予定の表示にはJavaScriptを有効にしてください。</p></noscript>
-<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。<a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>背景は各エリアが属するマップの画像です。取得時の循環を基に予測します。ゲーム内の変更は自動反映されません。</p></footer>
+<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。<a href="https://apexlegendsstatus.com/current-map/mixtape/pubs" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>背景は各エリアが属するマップの画像です。現在・次のマップはAPI時刻を使用。以降はシーズン31の循環に基づく予測です。</p></footer>
 </main>
-<script>
+<script type="module">
+import {RANKED,MIXTAPE,buildRotation,readSnapshot} from './rotation/model.mjs';
 'use strict';
 const TZ='Asia/Tokyo',DURATION_MINUTES=15;
-const MAPS=[{"name":"Estates","ja":"エステート","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"},{"name":"Monument","ja":"モニュメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Barometer","ja":"バロメーター","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Storm_Point.png"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Estates","ja":"エステート","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"},{"name":"Skulltown","ja":"スカルタウン","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Kings_Canyon.png"},{"name":"Fragment","ja":"フラグメント","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Caustic Treatment","ja":"コースティック処理施設","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Kings_Canyon.png"},{"name":"Fragment","ja":"フラグメント","mode":"Gun Run","modeJa":"ガンラン","code":"GUN","image":"https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png"},{"name":"Skulltown","ja":"スカルタウン","mode":"TDM","modeJa":"チームデスマッチ","code":"TDM","image":"https://apexlegendsstatus.com/assets/maps/Kings_Canyon.png"},{"name":"Hammond Labs","ja":"ハモンド研究所","mode":"Control","modeJa":"コントロール","code":"CTL","image":"https://apexlegendsstatus.com/assets/maps/Olympus.png"}];
-// Screenshot baseline: 2026-10-05 00:30 JST = Monument / TDM (MAPS[1]).
-const ANCHOR=new Date('2026-10-05T00:15:00+09:00');
-const CHECKED_AT=new Date(1791127244005);
+const MAPS=MIXTAPE;
 const $=id=>document.getElementById(id);
 const dateFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
 function formatRange(item){return dateFmt.format(item.start)+' ～ '+dateFmt.format(item.end);}
 function formatClock(ms){const t=Math.max(0,Math.floor(ms/1000));return [Math.floor(t/3600),Math.floor(t%3600/60),t%60].map(n=>String(n).padStart(2,'0')).join(':');}
-function buildSchedule(now=new Date()){
- const block=DURATION_MINUTES*60000,elapsed=Math.floor((now-ANCHOR)/block);
- const base=ANCHOR.getTime()+elapsed*block,index=((elapsed%MAPS.length)+MAPS.length)%MAPS.length;
- const items=[];
- for(let i=0;i<13;i++){
-  const start=new Date(base+i*block),end=new Date(start.getTime()+block);
-  const mapIndex=(index+i)%MAPS.length;
-  items.push({...MAPS[mapIndex],mapIndex,start,end,isCurrent:i===0});
- }
- return items;
-}
+let apiSnapshot=null;
+function buildSchedule(now=new Date()){return buildRotation(apiSnapshot?.modes.mixtape,'mixtape',now.getTime());}
 function textElement(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
 function renderSchedule(items){
  const fragment=document.createDocumentFragment();
@@ -93,7 +84,7 @@ function renderSchedule(items){
   details.append(textElement('p','modeChip',item.modeJa),textElement('p','scheduleMap',item.ja),textElement('p','scheduleTime',formatRange(item)));
   row.style.setProperty('--map-image',`url("${item.image}")`);
   row.append(details);
-  if(item.isCurrent)row.append(textElement('span','badge','現在'));
+  row.append(textElement('span','badge',item.isCurrent?'現在':item.isConfirmed?'API':'予測'));
   fragment.appendChild(row);
  }
  $('schedule').replaceChildren(fragment);
@@ -101,23 +92,53 @@ function renderSchedule(items){
 let lastBlock=null;
 function render(force=false){
  const now=new Date(),items=buildSchedule(now),current=items[0],next=items[1];
- $('checkedAt').textContent=dateFmt.format(CHECKED_AT);
- $('hero').hidden=!current;$('nextThumb').parentElement.hidden=!next;
- if(!current){$('schedule').replaceChildren();$('lastUpdated').textContent='予定の基準データを更新してください';return;}
+ $('checkedAt').textContent=apiSnapshot ? dateFmt.format(apiSnapshot.fetchedAt) : '接続待ち';
+ if(!current){renderUnavailable();return;}
+ $('hero').hidden=false;$('nextThumb').parentElement.hidden=false;
  const remaining=current.end-now,percent=Math.max(0,Math.min(100,remaining/900000*100));
  $('countdown').textContent=formatClock(remaining);$('progressFill').style.width=percent+'%';$('remainingPercent').textContent=Math.ceil(percent)+'%';
  if(force||lastBlock!==current.start.getTime()){
   $('currentMap').textContent=current.ja;$('mapJapanese').textContent='ミックステープ · 15分ローテーション';$('currentMode').textContent=current.modeJa;
   $('hero').style.setProperty('--hero-image',`url("${current.image}")`);
   $('currentTime').textContent=formatRange(current);$('heroIndex').textContent='MIXTAPE / 15 MIN';
-  if(next){$('nextMap').textContent=next.ja;$('nextJapanese').textContent=next.modeJa;$('nextTime').textContent=formatRange(next);$('nextThumb').textContent='';$('nextThumb').style.setProperty('--next-image',`url("${next.image}")`);}
-  $('lastUpdated').textContent='表示更新: '+dateFmt.format(now);
+  if(next){$('nextMap').textContent=next.ja;$('nextJapanese').textContent=next.modeJa;$('nextTime').textContent=formatRange(next);$('nextThumb').textContent='';$('nextThumb').style.setProperty('--next-image',`url("${next.image}")`);}else{clearNext();}
+  $('lastUpdated').textContent='API取得: '+dateFmt.format(apiSnapshot.fetchedAt);
   renderSchedule(items);lastBlock=current.start.getTime();
  }
 }
-$('refreshButton').addEventListener('click',()=>render(true));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)render(true);});
-render();setInterval(()=>render(),1000);
+
+function clearNext(){
+ $('nextMap').textContent='確認待ち';$('nextJapanese').textContent='';$('nextTime').textContent='次のAPI更新をお待ちください';$('nextThumb').style.removeProperty('--next-image');
+}
+let apiMessage='マップ情報を取得しています';
+function renderUnavailable(){
+ $('hero').hidden=false;$('nextThumb').parentElement.hidden=false;
+ $('currentMap').textContent='取得待ち';$('mapJapanese').textContent='最新のAPIデータを確認中';
+ $('currentMode').textContent='ミックステープ';
+ $('currentTime').textContent=apiMessage;$('countdown').textContent='--:--:--';$('progressFill').style.width='0%';$('remainingPercent').textContent='—';
+ $('hero').style.removeProperty('--hero-image');$('schedule').replaceChildren();clearNext();
+ $('lastUpdated').textContent=apiSnapshot?'最新の切り替え情報を取得できていません':'API接続待ち';
+}
+let loading=false,lastRequest=0;
+async function refreshApi(){
+ if(loading || Date.now()-lastRequest<10000)return;
+ loading=true;lastRequest=Date.now();
+ try{
+  // The key stays in GitHub Secrets; only selected public map data is read here.
+  // Reading raw data avoids waiting for a Pages redeploy on every scheduled update.
+  const url='https://raw.githubusercontent.com/haruto312/apexmap/main/data/rotation.json?t='+Math.floor(Date.now()/60000);
+  const response=await fetch(url,{cache:'no-store',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw Error('Data unavailable');
+  const snapshot=readSnapshot(await response.json());
+  if(!snapshot.modes.mixtape)throw Error('Mode unavailable');
+  apiSnapshot=snapshot;apiMessage='最新のAPIデータを確認中';
+ }catch{apiMessage='最新データを取得できません。接続設定または通信状態をご確認ください。';}
+ finally{loading=false;render(true);}
+}
+$('refreshButton').addEventListener('click',()=>refreshApi());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){render(true);refreshApi();}});
+render();refreshApi();setInterval(()=>render(),1000);
+setInterval(()=>{if(!document.hidden)refreshApi();},60000);
 </script>
 </body>
 </html>
