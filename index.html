@@ -22,12 +22,14 @@
 
 .modeNav{display:flex;gap:4px}.modeNav a{display:block;color:var(--muted);text-decoration:none;padding:13px 24px 15px;font-size:12px;font-weight:900;letter-spacing:.08em}.modeNav a:hover{color:var(--cream);background:#24282e}.modeNav a.activeTab{color:var(--cream);background:var(--red)}
 @media(max-width:680px){.modeNav a{padding:11px 13px;font-size:10px}.navMeta{display:none}}
+
+.notice a{color:var(--cream)}
 </style>
 </head>
 <body>
 <header class="header"><div class="shell headerInner">
 <svg class="emblem" viewBox="0 0 48 52" aria-hidden="true"><path fill="currentColor" d="M24 1 2 44h14l4-8h-7l11-22 11 22h-7l4 8h14L24 1Z"/><path fill="currentColor" d="M21 42h6v8h-6z"/></svg>
-<div class="brand">APEX<span style="color:var(--red)"> / </span>MAPS<small>ROTATION INTELLIGENCE</small></div>
+<div class="brand">APEX<span style="color:var(--red)"> / </span>MAPS<small>SEASON 31 / CIPHER</small></div>
 <div class="headerRule"></div><span class="pageLabel">ランクマップ情報</span>
 <div class="headerRight"><span class="timezone">JST / UTC+09</span><button class="update" id="refreshButton" type="button" aria-label="マップ情報を更新"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M19 12a7 7 0 0 0-12-5L4 10m1 2a7 7 0 0 0 12 5l3-3"/></svg>更新</button></div>
 </div></header>
@@ -40,21 +42,17 @@
 <div class="timer"><span class="timerLabel">次のマップに切り替わるまで</span><strong class="countdown" id="countdown" role="timer" aria-label="切り替えまでの残り時間">--:--:--</strong><div class="progressTrack" aria-hidden="true"><div class="progressFill" id="progressFill"></div></div><div class="timerFoot"><span>ROTATION REMAINING</span><span id="remainingPercent">—</span></div></div></div>
 </section>
 <section class="nextPanel" aria-label="次のランクマップ"><div class="nextThumb" id="nextThumb" aria-hidden="true"></div><div class="nextDetails"><svg class="nextArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><div><div class="nextEyebrow">UP NEXT / 次の戦場</div><h2 class="nextName" id="nextMap">—</h2><p class="nextJapanese" id="nextJapanese">—</p></div></div><p class="nextTime" id="nextTime">—</p></section>
-<div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">固定スケジュールに基づく予測 · API未接続</span></div>
-<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後7日間のローテーション</h2></div><p>4時間30分ごとに切り替え · 日本時間</p></div><div class="rotationLegend"><span>ROTATION ORDER</span><span class="rotationStep">World's Edge</span><span class="rotationChevron" aria-hidden="true">›</span><span class="rotationStep">Olympus</span><span class="rotationChevron" aria-hidden="true">›</span><span class="rotationStep">Broken Moon</span><span class="rotationChevron" aria-hidden="true">↻</span></div><div class="schedule" id="schedule"></div></section>
+<div class="statusLine"><span id="lastUpdated" role="status">更新: —</span><span class="statusNote">APIの現在・次のマップ ＋ 以降の予測</span></div>
+<section aria-labelledby="scheduleTitle"><div class="scheduleHead"><div class="scheduleTitle"><span class="sectionNumber">01 /</span><h2 id="scheduleTitle">今後7日間のローテーション</h2></div><p>4時間30分ごとに切り替え · 日本時間</p></div><div class="rotationLegend"><span>SEASON 31</span><span class="rotationStep">Storm Point</span><span class="rotationChevron">›</span><span class="rotationStep">E-District Night</span><span class="rotationChevron">›</span><span class="rotationStep">Broken Moon</span><span class="rotationChevron">↻</span></div><div class="schedule" id="schedule"></div></section>
 <noscript><p class="noscript">マップと予定の表示にはJavaScriptを有効にしてください。</p></noscript>
-<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">Apex Legends の非公式マップ情報ページです。背景画像はEA配信画像を使用。<br>元のHTMLの固定ローテーションを引き継いでおり、実際のゲーム内スケジュールと異なる場合があります。</p></footer>
+<footer class="footer"><span class="footerBrand">APEX / MAPS &nbsp; — &nbsp; UNOFFICIAL</span><p class="notice">非公式マップ情報ページ。<a href="https://apexlegendsstatus.com" target="_blank" rel="noopener noreferrer">Data provided by Apex Legends Status</a><br>現在・次のマップはAPIの切り替え時刻を使用。以降はシーズン31の循環に基づく予測です。画像の権利はEA / Respawnに帰属します。</p></footer>
 </main>
-<script>
+<script type="module">
+import {RANKED,MIXTAPE,buildRotation,readSnapshot} from './rotation/model.mjs';
 'use strict';
 const TZ='Asia/Tokyo';
 const DURATION_MINUTES=270;
-const MAPS=[
- {name:"World's Edge",ja:'ワールズエッジ',image:'https://drop-assets.ea.com/images/1ANGzrckUvxyjMXBgcF33n/038523604527b713e593e09dc125d2c8/Apex_S30-Season_Worlds-Edge-16x9.jpg?im=AspectCrop%3D%2816%2C9%29%2CxPosition%3D0.4973958333333333%2CyPosition%3D0.38796296296296295'},
- {name:'Olympus',ja:'オリンパス',image:'https://drop-assets.ea.com/images/3M9j96pECUCI1nAL06ouH5/ccc3de072fcc869d6c0686d0dae96b7a/Apex_S27-Season_Olympus-16x9.jpg?im=AspectCrop%3D%2816%2C9%29%2CxPosition%3D1%2CyPosition%3D1'},
- {name:'Broken Moon',ja:'ブロークンムーン',image:'https://drop-assets.ea.com/images/7A38YY4DSVUVne751E02SP/1018cbc3a7d00d862d14d18677fb7b8a/S21_-_BM_-_Quarantine_Zone_2.png?im=AspectCrop%3D%2816%2C9%29%2CxPosition%3D0.5%2CyPosition%3D0.5'}
-];
-const ANCHOR=new Date('2026-09-19T15:30:00.000Z');
+const MAPS=RANKED;
 const $=id=>document.getElementById(id);
 const dateFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
 const dayFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,month:'numeric',day:'numeric',weekday:'short'});
@@ -62,21 +60,8 @@ const clockFmt=new Intl.DateTimeFormat('ja-JP',{timeZone:TZ,hour:'2-digit',minut
 const dateKeyFmt=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
 function formatRange(item){return `${dateFmt.format(item.start)} ～ ${dateFmt.format(item.end)}`;}
 function formatClock(ms){const t=Math.max(0,Math.floor(ms/1000));return [Math.floor(t/3600),Math.floor(t%3600/60),t%60].map(n=>String(n).padStart(2,'0')).join(':');}
-function buildSchedule(now=new Date()){
- const block=DURATION_MINUTES*60000;
- const elapsed=Math.floor((now-ANCHOR)/block);
- const base=ANCHOR.getTime()+elapsed*block;
- const index=((elapsed%MAPS.length)+MAPS.length)%MAPS.length;
- const limit=now.getTime()+7*86400000;
- const items=[];
- for(let i=0;i<80;i++){
-  const start=new Date(base+i*block);
-  if(start.getTime()>=limit)break;
-  const mapIndex=(index+i)%MAPS.length;
-  items.push({...MAPS[mapIndex],mapIndex,start,end:new Date(start.getTime()+block),isCurrent:i===0});
- }
- return items;
-}
+let apiSnapshot=null;
+function buildSchedule(now=new Date()){return buildRotation(apiSnapshot?.modes.ranked,'ranked',now.getTime());}
 function textElement(tag,className,text){const element=document.createElement(tag);element.className=className;element.textContent=text;return element;}
 function renderSchedule(items,now){
  const fragment=document.createDocumentFragment();
@@ -96,8 +81,7 @@ function renderSchedule(items,now){
    const startOnPriorDay=item.isCurrent&&key!==today;
    const timeText=(startOnPriorDay?dayFmt.format(item.start)+' ':'')+clockFmt.format(item.start)+' — '+(crossesDate?dayFmt.format(item.end)+' ':'')+clockFmt.format(item.end);
    details.append(textElement('p','scheduleMap',item.name),textElement('p','scheduleTime',timeText));
-   const mark=textElement('span',item.isCurrent?'badge':'rowMark',item.isCurrent?'現在':'');
-   if(!item.isCurrent)mark.setAttribute('aria-hidden','true');
+   const mark=textElement('span','badge',item.isCurrent?'現在':item.isConfirmed?'API':'予測');
    row.append(details,mark);section.appendChild(row);
   }
   fragment.appendChild(section);
@@ -108,7 +92,7 @@ let lastBlock=null;
 let lastDay=null;
 function render(force=false){
  const now=new Date();const items=buildSchedule(now);const current=items[0],next=items[1];
- if(!current||!next)return;
+ if(!current){renderUnavailable();return;}
  const remaining=current.end-now;
  const percent=Math.max(0,Math.min(100,remaining/(DURATION_MINUTES*60000)*100));
  $('countdown').textContent=formatClock(remaining);
@@ -118,18 +102,46 @@ function render(force=false){
  if(force||lastBlock!==current.start.getTime()||lastDay!==day){
   $('currentMap').textContent=current.name;$('mapJapanese').textContent=current.ja;
   $('currentTime').textContent=formatRange(current);
-  $('heroIndex').textContent=`MAP ${String(current.mapIndex+1).padStart(2,'0')} / 03`;
+  $('heroIndex').textContent=`MAP ${String((current.mapIndex??0)+1).padStart(2,'0')} / 03`;
   $('hero').style.setProperty('--hero-image',`url("${current.image}")`);
-  $('nextMap').textContent=next.name;$('nextJapanese').textContent=next.ja;
-  $('nextTime').textContent=formatRange(next);
-  $('nextThumb').style.setProperty('--next-image',`url("${next.image}")`);
-  $('lastUpdated').textContent='更新: '+dateFmt.format(now);
+  if(next){$('nextMap').textContent=next.name;$('nextJapanese').textContent=next.ja;$('nextTime').textContent=formatRange(next);$('nextThumb').style.setProperty('--next-image',`url("${next.image}")`);}else{clearNext();}
+  $('lastUpdated').textContent='API取得: '+dateFmt.format(apiSnapshot.fetchedAt);
   renderSchedule(items,now);lastBlock=current.start.getTime();lastDay=day;
  }
 }
-$('refreshButton').addEventListener('click',()=>render(true));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)render(true);});
-render();setInterval(()=>render(),1000);
+
+function clearNext(){
+ $('nextMap').textContent='確認待ち';$('nextJapanese').textContent='';$('nextTime').textContent='次のAPI更新をお待ちください';$('nextThumb').style.removeProperty('--next-image');
+}
+let apiMessage='マップ情報を取得しています';
+function renderUnavailable(){
+ $('hero').hidden=false;$('nextThumb').parentElement.hidden=false;
+ $('currentMap').textContent='取得待ち';$('mapJapanese').textContent='最新のAPIデータを確認中';
+ 
+ $('currentTime').textContent=apiMessage;$('countdown').textContent='--:--:--';$('progressFill').style.width='0%';$('remainingPercent').textContent='—';
+ $('hero').style.removeProperty('--hero-image');$('schedule').replaceChildren();clearNext();
+ $('lastUpdated').textContent=apiSnapshot?'最新の切り替え情報を取得できていません':'API接続待ち';
+}
+let loading=false,lastRequest=0;
+async function refreshApi(){
+ if(loading || Date.now()-lastRequest<10000)return;
+ loading=true;lastRequest=Date.now();
+ try{
+  // The key stays in GitHub Secrets; only selected public map data is read here.
+  // Reading raw data avoids waiting for a Pages redeploy on every scheduled update.
+  const url='https://raw.githubusercontent.com/haruto312/apexmap/main/data/rotation.json?t='+Math.floor(Date.now()/60000);
+  const response=await fetch(url,{cache:'no-store',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw Error('Data unavailable');
+  const snapshot=readSnapshot(await response.json());
+  if(!snapshot.modes.ranked)throw Error('Mode unavailable');
+  apiSnapshot=snapshot;apiMessage='最新のAPIデータを確認中';
+ }catch{apiMessage='最新データを取得できません。接続設定または通信状態をご確認ください。';}
+ finally{loading=false;render(true);}
+}
+$('refreshButton').addEventListener('click',()=>refreshApi());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){render(true);refreshApi();}});
+render();refreshApi();setInterval(()=>render(),1000);
+setInterval(()=>{if(!document.hidden)refreshApi();},60000);
 </script>
 </body>
 </html>

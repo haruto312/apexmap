@@ -1,0 +1,38 @@
+name: Update map rotation
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '2-57/5 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-rotation.yml'
+      - 'scripts/update-rotation.mjs'
+      - 'rotation/model.mjs'
+permissions:
+  contents: write
+concurrency:
+  group: update-map-rotation
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch public map data
+        env:
+          APEX_API_KEY: ${{ secrets.APEX_API_KEY }}
+        run: node scripts/update-rotation.mjs
+      - name: Commit rotation snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/rotation.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Refresh map rotation data'
+          git pull --rebase origin main
+          git push origin HEAD:main
